@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Patrones Rítmicos - Metrónomo Continuo</title>
+    
+    <style>
+        /* ======================================= */
+        /* === ESTILOS CSS === */
+        /* ======================================= */
+
+        :root {
+            --reel-width: 150px; 
+            --reel-height: 150px;
+            --border-color: #333;
+            --spin-duration: 2s;
+            --highlight-color: #ffc107; 
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f4f4f9;
+            margin: 0;
+        }
+
+        h1 {
+            color: #007bff;
+            margin-bottom: 30px;
+        }
+
+        /* --- Contenedor Principal (Slot) --- */
+        .slot-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .slot-window {
+            display: flex;
+            gap: 10px;
+            border: 5px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden; 
+            margin-bottom: 20px;
+            width: calc((var(--reel-width) * 4) + 30px);
+        }
+
+        /* --- Rueda Individual (Reel) --- */
+        .reel {
+            width: var(--reel-width);
+            height: var(--reel-height);
+            transform: translateY(0);
+            transition: transform var(--spin-duration) ease-out;
+            border: 3px solid transparent; 
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column; 
+            justify-content: space-between; 
+        }
+
+        .reel.highlight {
+            border-color: var(--highlight-color);
+            box-shadow: 0 0 10px var(--highlight-color);
+        }
+
+        .reel img {
+            width: 100%;
+            height: calc(var(--reel-height) - 40px); 
+            display: block;
+            object-fit: contain;
+        }
+
+        /* --- Botones --- */
+        .play-pattern-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 3px 0; 
+            font-size: 0.9em;
+            cursor: pointer;
+            margin: 5px auto;
+            display: block;
+            width: 80%;
+        }
+
+        #spin-button {
+            padding: 10px 30px;
+            font-size: 1.2em;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-right: 15px; 
+        }
+        
+        #play-all-button {
+            padding: 10px 30px;
+            font-size: 1.2em;
+            background-color: #ffc107;
+            color: #333;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        #spin-button:hover:not(:disabled) { background-color: #1e7e34; }
+        #play-all-button:hover:not(:disabled) { background-color: #e0a800; }
+        #spin-button:disabled, #play-all-button:disabled { background-color: #6c757d; cursor: not-allowed; }
+
+        #message {
+            margin-top: 15px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: var(--border-color);
+            min-height: 40px; 
+        }
+
+        /* --- Adaptación para Móviles --- */
+        @media (max-width: 600px) {
+            :root {
+                --reel-width: 80px;
+                --reel-height: 80px;
+            }
+            .slot-window {
+                gap: 5px;
+                width: calc((var(--reel-width) * 4) + 15px);
+            }
+            #spin-button, #play-all-button {
+                padding: 8px 15px;
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Patrones Rítmicos Musicales</h1>
+    
+    <div class="slot-container">
+        <div class="slot-window">
+            <div class="reel" id="reel-1"></div>
+            <div class="reel" id="reel-2"></div>
+            <div class="reel" id="reel-3"></div>
+            <div class="reel" id="reel-4"></div>
+        </div>
+        
+        <button id="spin-button">¡GIRAR!</button>
+        <button id="play-all-button">▶️ Solfeo Rítmico</button>
+        
+        <div id="message">Pulsa "GIRAR" para comenzar.</div>
+    </div>
+
+    <script>
+        /* ============================================== */
+        /* === LÓGICA JAVASCRIPT (SOLFEO Y METRÓNOMO) === */
+        /* ============================================== */
+        document.addEventListener('DOMContentLoaded', () => {
+            const reels = [
+                document.getElementById('reel-1'),
+                document.getElementById('reel-2'),
+                document.getElementById('reel-3'),
+                document.getElementById('reel-4')
+            ];
+            const spinButton = document.getElementById('spin-button');
+            const playAllButton = document.getElementById('play-all-button');
+            const messageDisplay = document.getElementById('message');
+            
+            // --- CONSTANTES DE TEMPO ---
+            // 80 BPM = 750ms por negra
+            const TEMPO_MS = 750; 
+            const COUNTDOWN_BEATS = 4;
+
+            const patterns = [
+                '00.png', '01.png', '02.png', '03.png', '04.png', 
+                '05.png', '06.png', '07.png', '08.png'  
+            ];
+            
+            const patternNames = [
+                'Negra', 'Dos Corcheas', 'Corchea y Dos Semicorcheas', 'Blanca', 
+                'Negra con Puntillo', 'Tresillo de Corcheas', 'Silencio de Negra', 
+                'Cuatro Semicorcheas', 'Galopa' 
+            ];
+            
+            // MAPEO DE SONIDOS
+            const soundsMap = {
+                0: new Audio('sounds/s_00.mp3'), 1: new Audio('sounds/s_01.mp3'), 
+                2: new Audio('sounds/s_02.mp3'), 3: new Audio('sounds/s_03.mp3'), 
+                4: new Audio('sounds/s_04.mp3'), 5: new Audio('sounds/s_05.mp3'), 
+                6: new Audio('sounds/s_06.mp3'), 7: new Audio('sounds/s_07.mp3'), 
+                8: new Audio('sounds/s_08.mp3'), 
+            };
+            const patternSounds = Object.values(soundsMap); 
+            
+            // Sonido de Metrónomo "Tic" (Debe ser un sonido corto y seco)
+            // ⚠️ Asegúrate de que este archivo exista en tu carpeta 'sounds/'
+            const metronomeTic = new Audio('sounds/metronome.mp3'); 
+
+
+            const IMAGE_HEIGHT = 150; 
+            const SPIN_COUNT = 30; 
+            const TOTAL_ITEMS = patterns.length; 
+            const SPIN_DURATION_MS = 2000; 
+            
+            let currentWinningIndexes = [0, 0, 0, 0]; 
+
+            
+            // --- FUNCIONES DE AUDIO Y VISTA ---
+
+            /**
+             * Reproduce un sonido de Patrón Rítmico. Solo detiene OTROS sonidos de patrón.
+             */
+            function playPatternSound(patternIndex) {
+                // 1. Detener y reiniciar solo los sonidos de patrones rítmicos para evitar superposición.
+                patternSounds.forEach(sound => {
+                    if (!sound.paused) {
+                        sound.pause();
+                        sound.currentTime = 0;
+                    }
+                });
+
+                // 2. Reproducir el sonido seleccionado
+                const sound = soundsMap[patternIndex];
+                if (sound) {
+                    sound.currentTime = 0; 
+                    sound.play().catch(e => console.error("Error al reproducir el sonido:", e)); 
+                }
+            }
+            
+            /**
+             * Reproduce el sonido Metrónomo "Tic"
+             */
+            function playTic() {
+                // 🛑 No detenemos el metrónomo aquí, solo lo reiniciamos para el siguiente tic.
+                metronomeTic.currentTime = 0;
+                metronomeTic.play().catch(e => console.error("Error al reproducir el tic:", e));
+            }
+
+            function highlightReel(reelElement, duration) {
+                reelElement.classList.add('highlight');
+                setTimeout(() => {
+                    reelElement.classList.remove('highlight');
+                }, duration);
+            }
+            
+            function initializeReel(reelElement) {
+                reelElement.innerHTML = ''; 
+                for (let i = 0; i < TOTAL_ITEMS * 5; i++) {
+                    const index = i % TOTAL_ITEMS;
+                    const img = document.createElement('img');
+                    img.src = patterns[index];
+                    img.alt = patternNames[index]; 
+                    img.dataset.patternIndex = index;
+                    reelElement.appendChild(img);
+                }
+                const initialPosition = -(TOTAL_ITEMS * IMAGE_HEIGHT); 
+                reelElement.style.transition = 'none'; 
+                reelElement.style.transform = `translateY(${initialPosition}px)`;
+            }
+
+            function createFinalView(reel, index, patternIndex) {
+                reel.innerHTML = ''; 
+                
+                const playButton = document.createElement('button');
+                playButton.textContent = '▶️ Escuchar'; 
+                playButton.className = 'play-pattern-button'; 
+                playButton.addEventListener('click', () => {
+                    playPatternSound(patternIndex);
+                });
+
+                const img = document.createElement('img');
+                img.src = patterns[patternIndex];
+                img.alt = patternNames[patternIndex]; 
+                img.id = `result-reel${index}-${patternIndex}`; 
+                img.dataset.patternIndex = patternIndex; 
+
+                reel.appendChild(playButton);
+                reel.appendChild(img);
+                
+                reel.style.transition = 'none'; 
+                reel.style.transform = `translateY(0px)`;
+            }
+
+            function spinReel(reelIndex) {
+                return new Promise((resolve) => {
+                    const reel = reels[reelIndex];
+                    const winningIndex = Math.floor(Math.random() * TOTAL_ITEMS);
+                    const finalPosition = -((SPIN_COUNT * IMAGE_HEIGHT) + (winningIndex * IMAGE_HEIGHT));
+
+                    reel.style.transition = `transform ${SPIN_DURATION_MS / 1000}s ease-out`;
+                    reel.style.transform = `translateY(${finalPosition}px)`;
+
+                    setTimeout(() => {
+                        resolve(winningIndex); 
+                    }, SPIN_DURATION_MS); 
+                });
+            }
+
+
+            // --- LÓGICA DE SOLFEO RÍTMICO (Ajustada para Metrónomo Continuo) ---
+
+            async function startSequentialPlay() {
+                spinButton.disabled = true;
+                playAllButton.disabled = true;
+
+                // 1. CUENTA REGRESIVA
+                for (let i = COUNTDOWN_BEATS; i > 0; i--) {
+                    messageDisplay.innerHTML = `🎵 **Contando... ${i}**`;
+                    playTic(); // Tic para el conteo
+                    await new Promise(r => setTimeout(r, TEMPO_MS));
+                }
+                
+                // 2. REPRODUCCIÓN SECUENCIAL (SOLFEO)
+                messageDisplay.innerHTML = "🎶 **¡Solfeo Rítmico!**";
+                
+                for (let i = 0; i < currentWinningIndexes.length; i++) {
+                    const patternIndex = currentWinningIndexes[i];
+                    const reelElement = reels[i];
+
+                    playTic(); // 🛑 Tic justo antes del patrón (metrónomo continuo)
+                    highlightReel(reelElement, TEMPO_MS); 
+                    playPatternSound(patternIndex); // Suena con el metrónomo
+
+                    await new Promise(r => setTimeout(r, TEMPO_MS));
+                }
+
+                const finalSources = currentWinningIndexes.map(index => patterns[index]);
+                messageDisplay.innerHTML = `¡Stop! Sources: <br> **${finalSources.join(' | ')}**`;
+                
+                spinButton.disabled = false;
+                playAllButton.disabled = false;
+            }
+
+
+            // --- LÓGICA DE GIRO ---
+
+            async function startSpin() {
+                spinButton.disabled = true;
+                playAllButton.disabled = true;
+                messageDisplay.textContent = '¡Girando...! 🥁';
+
+                reels.forEach(initializeReel); 
+                await new Promise(r => setTimeout(r, 50)); 
+                
+                const winningPatternIndexes = await Promise.all([
+                    spinReel(0), spinReel(1), spinReel(2), spinReel(3)
+                ]);
+                
+                currentWinningIndexes = winningPatternIndexes;
+                
+                const finalSources = currentWinningIndexes.map(index => patterns[index]);
+                const sourcesString = finalSources.join(' | ');
+                messageDisplay.innerHTML = `¡Stop! Sources: <br> **${sourcesString}**`;
+                
+                currentWinningIndexes.forEach((patternIndex, index) => {
+                    createFinalView(reels[index], index, patternIndex);
+                });
+                
+                spinButton.disabled = false;
+                playAllButton.disabled = false;
+            }
+
+            // --- LISTENERS ---
+            spinButton.addEventListener('click', startSpin);
+            playAllButton.addEventListener('click', startSequentialPlay);
+
+            // Inicialización
+            reels.forEach((reel, index) => {
+                createFinalView(reel, index, 0); 
+            });
+            currentWinningIndexes = [0, 0, 0, 0];
+        });
+    </script>
+</body>
+</html>
