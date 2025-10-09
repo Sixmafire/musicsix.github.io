@@ -240,195 +240,200 @@
     <p class="footer-signature">Creado por: Sixmafire &reg;</p>
 
     <script>
-        /* La lógica JavaScript se mantiene idéntica */
-        document.addEventListener('DOMContentLoaded', () => {
-            const reels = [
-                document.getElementById('reel-1'),
-                document.getElementById('reel-2'),
-                document.getElementById('reel-3'),
-                document.getElementById('reel-4')
-            ];
-            const spinButton = document.getElementById('spin-button');
-            const playAllButton = document.getElementById('play-all-button');
-            const messageDisplay = document.getElementById('message');
-            
-            // --- CONSTANTES DE TEMPO ---
-            const TEMPO_MS = 750; 
-            const COUNTDOWN_BEATS = 4;
+       /* ============================================== */
+/* === LÓGICA JAVASCRIPT (SOLFEO Y METRÓNOMO) === */
+/* ============================================== */
+document.addEventListener('DOMContentLoaded', () => {
+    const reels = [
+        document.getElementById('reel-1'),
+        document.getElementById('reel-2'),
+        document.getElementById('reel-3'),
+        document.getElementById('reel-4')
+    ];
+    const spinButton = document.getElementById('spin-button');
+    const playAllButton = document.getElementById('play-all-button');
+    const messageDisplay = document.getElementById('message');
+    
+    // --- CONSTANTES DE TEMPO ---
+    const TEMPO_MS = 750; 
+    const COUNTDOWN_BEATS = 4; // Mantenemos 4 beats totales
 
-            const patterns = [
-                '00.png', '01.png', '02.png', '03.png', '04.png', 
-                '05.png', '06.png', '07.png', '08.png'  
-            ];
-            
-            const patternNames = [
-                'Negra', 'Dos Corcheas', 'Corchea y Dos Semicorcheas', 'Blanca', 
-                'Negra con Puntillo', 'Tresillo de Corcheas', 'Silencio de Negra', 
-                'Cuatro Semicorcheas', 'Galopa' 
-            ];
-            
-            // MAPEO DE SONIDOS
-            const soundsMap = {
-                0: new Audio('sounds/s_00.mp3'), 1: new Audio('sounds/s_01.mp3'), 
-                2: new Audio('sounds/s_02.mp3'), 3: new Audio('sounds/s_03.mp3'), 
-                4: new Audio('sounds/s_04.mp3'), 5: new Audio('sounds/s_05.mp3'), 
-                6: new Audio('sounds/s_06.mp3'), 7: new Audio('sounds/s_07.mp3'), 
-                8: new Audio('sounds/s_08.mp3'), 
-            };
-            const patternSounds = Object.values(soundsMap); 
-            
-            const metronomeTic = new Audio('sounds/metronome.mp3'); 
+    const patterns = [
+        '00.png', '01.png', '02.png', '03.png', '04.png', 
+        '05.png', '06.png', '07.png', '08.png'  
+    ];
+    
+    const patternNames = [
+        'Negra', 'Dos Corcheas', 'Corchea y Dos Semicorcheas', 'Blanca', 
+        'Negra con Puntillo', 'Tresillo de Corcheas', 'Silencio de Negra', 
+        'Cuatro Semicorcheas', 'Galopa' 
+    ];
+    
+    // MAPEO DE SONIDOS
+    const soundsMap = {
+        0: new Audio('sounds/s_00.mp3'), 1: new Audio('sounds/s_01.mp3'), 
+        2: new Audio('sounds/s_02.mp3'), 3: new Audio('sounds/s_03.mp3'), 
+        4: new Audio('sounds/s_04.mp3'), 5: new Audio('sounds/s_05.mp3'), 
+        6: new Audio('sounds/s_06.mp3'), 7: new Audio('sounds/s_07.mp3'), 
+        8: new Audio('sounds/s_08.mp3'), 
+    };
+    const patternSounds = Object.values(soundsMap); 
+    
+    const metronomeTic = new Audio('sounds/metronome.mp3'); 
 
-            const IMAGE_HEIGHT = 150; 
-            const SPIN_COUNT = 30; 
-            const TOTAL_ITEMS = patterns.length; 
-            const SPIN_DURATION_MS = 2000; 
-            
-            let currentWinningIndexes = [0, 0, 0, 0]; 
+    const IMAGE_HEIGHT = 150; 
+    const SPIN_COUNT = 30; 
+    const TOTAL_ITEMS = patterns.length; 
+    const SPIN_DURATION_MS = 2000; 
+    
+    let currentWinningIndexes = [0, 0, 0, 0]; 
 
-            
-            // --- FUNCIONES DE AUDIO Y VISTA ---
+    
+    // --- FUNCIONES DE AUDIO Y VISTA ---
 
-            function playPatternSound(patternIndex) {
-                patternSounds.forEach(sound => {
-                    if (!sound.paused) {
-                        sound.pause();
-                        sound.currentTime = 0;
-                    }
-                });
-
-                const sound = soundsMap[patternIndex];
-                if (sound) {
-                    sound.currentTime = 0; 
-                    sound.play().catch(e => console.error("Error al reproducir el sonido:", e)); 
-                }
+    function playPatternSound(patternIndex) {
+        patternSounds.forEach(sound => {
+            if (!sound.paused) {
+                sound.pause();
+                sound.currentTime = 0;
             }
-            
-            function playTic() {
-                metronomeTic.currentTime = 0;
-                metronomeTic.play().catch(e => console.error("Error al reproducir el tic:", e));
-            }
-
-            function highlightReel(reelElement, duration) {
-                reelElement.classList.add('highlight');
-                setTimeout(() => {
-                    reelElement.classList.remove('highlight');
-                }, duration);
-            }
-            
-            function initializeReel(reelElement) {
-                reelElement.innerHTML = ''; 
-                for (let i = 0; i < TOTAL_ITEMS * 5; i++) {
-                    const index = i % TOTAL_ITEMS;
-                    const img = document.createElement('img');
-                    img.src = patterns[index];
-                    img.alt = patternNames[index]; 
-                    img.dataset.patternIndex = index;
-                    reelElement.appendChild(img);
-                }
-                
-                const computedReelHeight = reelElement.offsetHeight;
-                const computedImageHeight = computedReelHeight - (40 * (computedReelHeight / IMAGE_HEIGHT)); 
-                
-                const initialPosition = -((TOTAL_ITEMS * computedImageHeight) + (computedReelHeight - computedImageHeight));
-                
-                reelElement.style.transition = 'none'; 
-                reelElement.style.transform = `translateY(${initialPosition}px)`;
-            }
-
-            function createFinalView(reel, index, patternIndex) {
-                reel.innerHTML = ''; 
-                
-                const playButton = document.createElement('button');
-                playButton.textContent = '▶️ Escuchar'; 
-                playButton.className = 'play-pattern-button'; 
-                playButton.addEventListener('click', () => {
-                    playPatternSound(patternIndex);
-                });
-
-                const img = document.createElement('img');
-                img.src = patterns[patternIndex];
-                img.alt = patternNames[patternIndex]; 
-                img.id = `result-reel${index}-${patternIndex}`; 
-                img.dataset.patternIndex = patternIndex; 
-
-                reel.appendChild(playButton);
-                reel.appendChild(img);
-                
-                reel.style.transition = 'none'; 
-                reel.style.transform = `translateY(0px)`;
-            }
-
-            function spinReel(reelIndex) {
-                return new Promise((resolve) => {
-                    const reel = reels[reelIndex];
-                    const winningIndex = Math.floor(Math.random() * TOTAL_ITEMS);
-
-                    const computedReelHeight = reel.offsetHeight;
-                    const computedImageHeight = reel.querySelector('img') ? reel.querySelector('img').offsetHeight : IMAGE_HEIGHT;
-
-                    const finalPosition = -((SPIN_COUNT * computedImageHeight) + (winningIndex * computedImageHeight));
-
-                    reel.style.transition = `transform ${SPIN_DURATION_MS / 1000}s ease-out`;
-                    reel.style.transform = `translateY(${finalPosition}px)`;
-
-                    setTimeout(() => {
-                        resolve(winningIndex); 
-                    }, SPIN_DURATION_MS); 
-                });
-            }
-
-
-            async function startSequentialPlay() {
-                spinButton.disabled = true;
-                playAllButton.disabled = true;
-                for (let i = COUNTDOWN_BEATS; i > 0; i--) {
-                    messageDisplay.innerHTML = `🎵 **Contando... ${i}**`;
-                    playTic(); 
-                    await new Promise(r => setTimeout(r, TEMPO_MS));
-                }
-                messageDisplay.innerHTML = "🎶 **¡Solfeo Rítmico!**";
-                for (let i = 0; i < currentWinningIndexes.length; i++) {
-                    const patternIndex = currentWinningIndexes[i];
-                    const reelElement = reels[i];
-                    playTic(); 
-                    highlightReel(reelElement, TEMPO_MS); 
-                    playPatternSound(patternIndex); 
-                    await new Promise(r => setTimeout(r, TEMPO_MS));
-                }
-                messageDisplay.innerHTML = `¡Stop!`;
-                spinButton.disabled = false;
-                playAllButton.disabled = false;
-            }
-
-            async function startSpin() {
-                spinButton.disabled = true;
-                playAllButton.disabled = true;
-                messageDisplay.textContent = '¡Girando...! 🥁';
-                reels.forEach(initializeReel); 
-                await new Promise(r => setTimeout(r, 50)); 
-                const winningPatternIndexes = await Promise.all([
-                    spinReel(0), spinReel(1), spinReel(2), spinReel(3)
-                ]);
-                currentWinningIndexes = winningPatternIndexes;
-                messageDisplay.innerHTML = `¡Stop!`;
-                currentWinningIndexes.forEach((patternIndex, index) => {
-                    createFinalView(reels[index], index, patternIndex);
-                });
-                spinButton.disabled = false;
-                playAllButton.disabled = false;
-            }
-
-            // --- LISTENERS ---
-            spinButton.addEventListener('click', startSpin);
-            playAllButton.addEventListener('click', startSequentialPlay);
-
-            // Inicialización
-            reels.forEach((reel, index) => {
-                createFinalView(reel, index, 0); 
-            });
-            currentWinningIndexes = [0, 0, 0, 0];
         });
+
+        const sound = soundsMap[patternIndex];
+        if (sound) {
+            sound.currentTime = 0; 
+            sound.play().catch(e => console.error("Error al reproducir el sonido:", e)); 
+        }
+    }
+    
+    function playTic() {
+        metronomeTic.currentTime = 0;
+        metronomeTic.play().catch(e => console.error("Error al reproducir el tic:", e));
+    }
+
+    function highlightReel(reelElement, duration) {
+        reelElement.classList.add('highlight');
+        setTimeout(() => {
+            reelElement.classList.remove('highlight');
+        }, duration);
+    }
+    
+    function initializeReel(reelElement) {
+        reelElement.innerHTML = ''; 
+        for (let i = 0; i < TOTAL_ITEMS * 5; i++) {
+            const index = i % TOTAL_ITEMS;
+            const img = document.createElement('img');
+            img.src = patterns[index];
+            img.alt = patternNames[index]; 
+            img.dataset.patternIndex = index;
+            reelElement.appendChild(img);
+        }
+        
+        const computedReelHeight = reelElement.offsetHeight;
+        const computedImageHeight = computedReelHeight - (40 * (computedReelHeight / IMAGE_HEIGHT)); 
+        
+        const initialPosition = -((TOTAL_ITEMS * computedImageHeight) + (computedReelHeight - computedImageHeight));
+        
+        reelElement.style.transition = 'none'; 
+        reelElement.style.transform = `translateY(${initialPosition}px)`;
+    }
+
+    function createFinalView(reel, index, patternIndex) {
+        reel.innerHTML = ''; 
+        
+        const playButton = document.createElement('button');
+        playButton.textContent = '▶️ Escuchar'; 
+        playButton.className = 'play-pattern-button'; 
+        playButton.addEventListener('click', () => {
+            playPatternSound(patternIndex);
+        });
+
+        const img = document.createElement('img');
+        img.src = patterns[patternIndex];
+        img.alt = patternNames[patternIndex]; 
+        img.id = `result-reel${index}-${patternIndex}`; 
+        img.dataset.patternIndex = patternIndex; 
+
+        reel.appendChild(playButton);
+        reel.appendChild(img);
+        
+        reel.style.transition = 'none'; 
+        reel.style.transform = `translateY(0px)`;
+    }
+
+    function spinReel(reelIndex) {
+        return new Promise((resolve) => {
+            const reel = reels[reelIndex];
+            const winningIndex = Math.floor(Math.random() * TOTAL_ITEMS);
+
+            const computedReelHeight = reel.offsetHeight;
+            const computedImageHeight = reel.querySelector('img') ? reel.querySelector('img').offsetHeight : IMAGE_HEIGHT;
+
+            const finalPosition = -((SPIN_COUNT * computedImageHeight) + (winningIndex * computedImageHeight));
+
+            reel.style.transition = `transform ${SPIN_DURATION_MS / 1000}s ease-out`;
+            reel.style.transform = `translateY(${finalPosition}px)`;
+
+            setTimeout(() => {
+                resolve(winningIndex); 
+            }, SPIN_DURATION_MS); 
+        });
+    }
+
+
+    async function startSequentialPlay() {
+        spinButton.disabled = true;
+        playAllButton.disabled = true;
+
+        // 🛑 CAMBIO CLAVE: Bucle de 1 a 4
+        for (let i = 1; i <= COUNTDOWN_BEATS; i++) {
+            messageDisplay.innerHTML = `🎵 **Contando... ${i}**`;
+            playTic(); 
+            await new Promise(r => setTimeout(r, TEMPO_MS));
+        }
+
+        messageDisplay.innerHTML = "🎶 **¡Solfeo Rítmico!**";
+        for (let i = 0; i < currentWinningIndexes.length; i++) {
+            const patternIndex = currentWinningIndexes[i];
+            const reelElement = reels[i];
+            playTic(); 
+            highlightReel(reelElement, TEMPO_MS); 
+            playPatternSound(patternIndex); 
+            await new Promise(r => setTimeout(r, TEMPO_MS));
+        }
+        messageDisplay.innerHTML = `¡Stop!`;
+        spinButton.disabled = false;
+        playAllButton.disabled = false;
+    }
+
+    async function startSpin() {
+        spinButton.disabled = true;
+        playAllButton.disabled = true;
+        messageDisplay.textContent = '¡Girando...! 🥁';
+        reels.forEach(initializeReel); 
+        await new Promise(r => setTimeout(r, 50)); 
+        const winningPatternIndexes = await Promise.all([
+            spinReel(0), spinReel(1), spinReel(2), spinReel(3)
+        ]);
+        currentWinningIndexes = winningPatternIndexes;
+        messageDisplay.innerHTML = `¡Stop!`;
+        currentWinningIndexes.forEach((patternIndex, index) => {
+            createFinalView(reels[index], index, patternIndex);
+        });
+        spinButton.disabled = false;
+        playAllButton.disabled = false;
+    }
+
+    // --- LISTENERS ---
+    spinButton.addEventListener('click', startSpin);
+    playAllButton.addEventListener('click', startSequentialPlay);
+
+    // Inicialización
+    reels.forEach((reel, index) => {
+        createFinalView(reel, index, 0); 
+    });
+    currentWinningIndexes = [0, 0, 0, 0];
+});
     </script>
 </body>
 </html>
