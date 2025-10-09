@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Patrones Rítmicos - V 1.0 (MVC)</title>
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1>Patrones Rítmicos Musicales</h1>
+    
+    <details class="rhythm-guide">
+        <summary>Guía de Figuras Rítmicas (Haz click aquí)</summary>
+        <div class="rhythm-content">
+            <div class="rhythm-item">
+                <img src="images/00.png" alt="Dos Corcheas" data-pattern-index="0">
+                <button class="play-small-button" data-pattern-index="0">▶️</button>
+                <p>Dos Corcheas</p>
+            </div>
+            
+            <div class="rhythm-item">
+                <img src="images/01.png" alt="Corchea con puntillo y semicorchea" data-pattern-index="1">
+                <button class="play-small-button" data-pattern-index="1">▶️</button>
+                <p>Corchea con Puntillo y Semicorchea</p>
+            </div>
+            
+            <div class="rhythm-item">
+                <img src="images/02.png" alt="Dos semicorcheas y una corchea" data-pattern-index="2">
+                <button class="play-small-button" data-pattern-index="2">▶️</button>
+                <p>Dos Semicorcheas y una Corchea</p>
+            </div>
+            
+            <div class="rhythm-item">
+                <img src="images/03.png" alt="Semicorchea y corchea con puntillo" data-pattern-index="3">
+                <button class="play-small-button" data-pattern-index="3">▶️</button>
+                <p>Semicorchea y Corchea con Puntillo</p>
+            </div>
+            
+            <div class="rhythm-item">
+                <img src="images/04.png" alt="Semicorchea, corchea y semicorchea" data-pattern-index="4">
+                <button class="play-small-button" data-pattern-index="4">▶️</button>
+                <p>Semicorchea, Corchea y Semicorchea</p>
+            </div>
+            
+            <div class="rhythm-item">
+                <img src="images/05.png" alt="Cuatro Semicorcheas" data-pattern-index="5">
+                <button class="play-small-button" data-pattern-index="5">▶️</button>
+                <p>Cuatro Semicorcheas</p>
+            </div>
+            
+            <div class="rhythm-item">
+                <img src="images/06.png" alt="Tresillo de Corcheas" data-pattern-index="6">
+                <button class="play-small-button" data-pattern-index="6">▶️</button>
+                <p>Tresillo de Corcheas</p>
+            </div>
+            
+            <div class="rhythm-item">
+                <img src="images/07.png" alt="Corchea y dos semicorcheas" data-pattern-index="7">
+                <button class="play-small-button" data-pattern-index="7">▶️</button>
+                <p>Corchea y Dos Semicorcheas</p>
+            </div>
+            
+            <div class="rhythm-item">
+                <img src="images/08.png" alt="Negra" data-pattern-index="8">
+                <button class="play-small-button" data-pattern-index="8">▶️</button>
+                <p>Negra</p>
+            </div>
+            
+        </div>
+    </details>
+    <div class="slot-container">
+        <div class="slot-window">
+            <div class="reel" id="reel-1"></div>
+            <div class="reel" id="reel-2"></div>
+            <div class="reel" id="reel-3"></div>
+            <div class="reel" id="reel-4"></div>
+        </div>
+        
+        <button id="spin-button">¡GIRAR!</button>
+        <button id="play-all-button">▶️ Solfeo Rítmico</button>
+        
+        <div id="message">Pulsa "GIRAR" para comenzar.</div>
+    </div>
+    
+    <p class="footer-signature">Creado por: Sixmafire &reg;</p>
+
+    <script src="app.js"></script>
+</body>
+</html>
