@@ -7,7 +7,7 @@
     
     <style>
         /* ======================================= */
-        /* === ESTILOS CSS (SIN CAMBIOS) === */
+        /* === ESTILOS GENERALES (ESCRITORIO) === */
         /* ======================================= */
 
         :root {
@@ -56,7 +56,7 @@
             text-shadow: 2px 2px 4px #000; 
         }
         
-        /* ESTILOS: Guía Rítmica Desplegable */
+        /* 🛑 NUEVOS ESTILOS: Guía Rítmica Desplegable */
         .rhythm-guide {
             width: 90%; 
             max-width: 800px;
@@ -78,6 +78,7 @@
             list-style: none; 
         }
         
+        /* Estilo para el ícono desplegable */
         .rhythm-guide summary::-webkit-details-marker {
             display: none;
         }
@@ -121,9 +122,10 @@
             object-fit: contain;
             background-color: #f8f8f8;
             border-radius: 4px;
+            flex-shrink: 0;
         }
         
-        /* === NUEVO ESTILO: Botón de Reproducción Pequeño === */
+        /* === AÑADIDO: Estilo para el botón de reproducción en la guía === */
         .play-small-button {
             background-color: #007bff;
             color: white;
@@ -131,7 +133,7 @@
             border-radius: 50%; /* Lo hace redondo */
             width: 30px; 
             height: 30px;
-            line-height: 30px; /* Centra el contenido verticalmente */
+            line-height: 30px; 
             padding: 0;
             font-size: 0.7em;
             cursor: pointer;
@@ -140,18 +142,20 @@
             align-items: center;
             justify-content: center;
             box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+            margin-right: 5px; /* Separación del texto */
         }
+        /* =============================================================== */
 
         .rhythm-item p {
             margin: 0;
             font-size: 0.9em;
             font-weight: bold;
-            flex-grow: 1; /* Permite que el texto ocupe el espacio restante */
+            flex-grow: 1; /* Permite que ocupe el espacio restante */
         }
-        /* --- Fin Nuevo Estilo --- */
+        /* ------------------------------------------- */
 
-        /* --- Estilos del Slot y Botones (Sin Cambios) --- */
 
+        /* --- Contenedor Principal (Slot) --- */
         .slot-container {
             background: rgba(255, 255, 255, 0.1); 
             padding: 20px;
@@ -161,6 +165,8 @@
             margin-bottom: 10px; 
             width: calc((var(--reel-width) * 4) + 60px); 
         }
+
+        /* --- El resto de estilos del slot y botones se mantienen --- */
 
         .slot-window {
             display: flex; 
@@ -252,7 +258,7 @@
 
 
         /* ======================================= */
-        /* === ADAPTACIÓN A MÓVILES (SIN CAMBIOS) === */
+        /* === ADAPTACIÓN A MÓVILES === */
         /* ======================================= */
         @media (max-width: 600px) {
             
@@ -262,6 +268,7 @@
                 --gap: 1.5vw; 
             }
             
+            /* Ajuste para móvil de la Guía Rítmica */
             .rhythm-guide {
                 width: 98vw;
                 margin-top: 10px;
@@ -317,10 +324,10 @@
             
             /* Ajuste para móviles en la guía */
             .rhythm-item {
-                flex-wrap: nowrap; /* Asegura que no salte de línea */
+                flex-wrap: nowrap; 
             }
             .rhythm-item img {
-                width: 40px; /* Un poco más pequeño */
+                width: 40px; 
                 height: 40px;
             }
             .play-small-button {
@@ -343,56 +350,57 @@
             <div class="rhythm-item">
                 <img src="00.png" alt="Dos Corcheas" data-pattern-index="0">
                 <button class="play-small-button" data-pattern-index="0">▶️</button>
-                <p>Dos Corcheas</p>
+                <p>00.png: Dos Corcheas</p>
             </div>
             
             <div class="rhythm-item">
                 <img src="01.png" alt="Corchea con puntillo y semicorchea" data-pattern-index="1">
                 <button class="play-small-button" data-pattern-index="1">▶️</button>
-                <p>Corchea con Puntillo y Semicorchea</p>
+                <p>01.png: Corchea con Puntillo y Semicorchea</p>
             </div>
             
             <div class="rhythm-item">
                 <img src="02.png" alt="Dos semicorcheas y una corchea" data-pattern-index="2">
                 <button class="play-small-button" data-pattern-index="2">▶️</button>
-                <p>Dos Semicorcheas y una Corchea (Contratiempo)</p>
+                <p>02.png: Dos Semicorcheas y una Corchea (Contratiempo)</p>
             </div>
             
             <div class="rhythm-item">
                 <img src="03.png" alt="Semicorchea y corchea con puntillo" data-pattern-index="3">
                 <button class="play-small-button" data-pattern-index="3">▶️</button>
-                <p>Semicorchea y Corchea con Puntillo (Saltillo)</p>
+                <p>03.png: Semicorchea y Corchea con Puntillo (Saltillo)</p>
             </div>
             
             <div class="rhythm-item">
                 <img src="04.png" alt="Semicorchea, corchea y semicorchea" data-pattern-index="4">
                 <button class="play-small-button" data-pattern-index="4">▶️</button>
-                <p>Semicorchea, Corchea y Semicorchea</p>
+                <p>04.png: Semicorchea, Corchea y Semicorchea</p>
             </div>
             
             <div class="rhythm-item">
                 <img src="05.png" alt="Cuatro Semicorcheas" data-pattern-index="5">
                 <button class="play-small-button" data-pattern-index="5">▶️</button>
-                <p>Cuatro Semicorcheas</p>
+                <p>05.png: Cuatro Semicorcheas</p>
             </div>
             
             <div class="rhythm-item">
                 <img src="06.png" alt="Tresillo de Corcheas" data-pattern-index="6">
                 <button class="play-small-button" data-pattern-index="6">▶️</button>
-                <p>Tresillo de Corcheas</p>
+                <p>06.png: Tresillo de Corcheas</p>
             </div>
             
             <div class="rhythm-item">
                 <img src="07.png" alt="Corchea y dos semicorcheas" data-pattern-index="7">
                 <button class="play-small-button" data-pattern-index="7">▶️</button>
-                <p>Corchea y Dos Semicorcheas</p>
+                <p>07.png: Corchea y Dos Semicorcheas</p>
             </div>
             
             <div class="rhythm-item">
                 <img src="08.png" alt="Negra" data-pattern-index="8">
                 <button class="play-small-button" data-pattern-index="8">▶️</button>
-                <p>Negra</p>
+                <p>08.png: Negra</p>
             </div>
+            
         </div>
     </details>
     <div class="slot-container">
@@ -413,7 +421,7 @@
 
     <script>
         /* ============================================== */
-        /* === LÓGICA JAVASCRIPT (SE MODIFICA ABAJO) === */
+        /* === LÓGICA JAVASCRIPT (AGREGANDO LISTENERS) === */
         /* ============================================== */
         document.addEventListener('DOMContentLoaded', () => {
             const reels = [
@@ -464,7 +472,6 @@
             // --- FUNCIONES DE AUDIO Y VISTA ---
 
             function playPatternSound(patternIndex) {
-                // Detiene todos los sonidos antes de reproducir uno nuevo
                 patternSounds.forEach(sound => {
                     if (!sound.paused) {
                         sound.pause();
@@ -495,48 +502,26 @@
                 reelElement.innerHTML = ''; 
                 for (let i = 0; i < TOTAL_ITEMS * 5; i++) {
                     const index = i % TOTAL_ITEMS;
-                    // Se crea el elemento de imagen para la animación
-                    const img = document.createElement('img'); 
+                    const img = document.createElement('img');
                     img.src = patterns[index];
                     img.alt = patternNames[index]; 
                     img.dataset.patternIndex = index;
-                    
-                    // Se crea el botón de reproducción (invisible durante el spin)
-                    const playButton = document.createElement('button');
-                    playButton.textContent = '▶️';
-                    playButton.className = 'play-pattern-button'; // Reutiliza el estilo del botón grande para este propósito
-                    playButton.style.opacity = '0'; // Oculto durante el giro
-                    
-                    const itemContainer = document.createElement('div');
-                    itemContainer.style.height = `${reelElement.offsetHeight}px`; // Ajusta la altura del contenedor para el giro
-                    itemContainer.style.display = 'flex';
-                    itemContainer.style.flexDirection = 'column';
-                    itemContainer.style.justifyContent = 'space-between';
-                    
-                    itemContainer.appendChild(playButton); // Se añade el botón (oculto)
-                    itemContainer.appendChild(img); // Se añade la imagen
-
-                    reelElement.appendChild(itemContainer);
+                    reelElement.appendChild(img);
                 }
                 
                 const computedReelHeight = reelElement.offsetHeight;
-                // La altura de la imagen se ajusta en CSS, pero se usa un cálculo aproximado o la altura real de un hijo si existe
-                const computedImageHeight = reelElement.querySelector('img') ? reelElement.querySelector('img').offsetHeight : IMAGE_HEIGHT; 
-
-                // Si se usa un contenedor para imagen + botón, la altura real del elemento es la del contenedor (reelElement.offsetHeight)
-                const itemFullHeight = computedReelHeight; 
+                const computedImageHeight = computedReelHeight - (40 * (computedReelHeight / IMAGE_HEIGHT)); 
                 
-                // Posición inicial: mueve la lista hacia arriba para mostrar el "fondo" antes de empezar a girar
-                const initialPosition = -((TOTAL_ITEMS * itemFullHeight) + itemFullHeight); 
+                const initialPosition = -((TOTAL_ITEMS * computedImageHeight) + (computedReelHeight - computedImageHeight));
                 
                 reelElement.style.transition = 'none'; 
                 reelElement.style.transform = `translateY(${initialPosition}px)`;
             }
 
-
             function createFinalView(reel, index, patternIndex) {
                 reel.innerHTML = ''; 
                 
+                // Botón de reproducción en la vista final
                 const playButton = document.createElement('button');
                 playButton.textContent = '▶️ Escuchar'; 
                 playButton.className = 'play-pattern-button'; 
@@ -550,8 +535,7 @@
                 img.id = `result-reel${index}-${patternIndex}`; 
                 img.dataset.patternIndex = patternIndex; 
 
-                // El orden se invierte en el DOM para que el botón aparezca arriba según el diseño inicial del reel
-                reel.appendChild(playButton); 
+                reel.appendChild(playButton);
                 reel.appendChild(img);
                 
                 reel.style.transition = 'none'; 
@@ -564,13 +548,11 @@
                     const winningIndex = Math.floor(Math.random() * TOTAL_ITEMS);
 
                     const computedReelHeight = reel.offsetHeight;
-                    // Ya que creamos contenedores, usamos la altura del reel como altura del "item"
-                    const itemFullHeight = computedReelHeight; 
+                    const computedImageHeight = reel.querySelector('img') ? reel.querySelector('img').offsetHeight : IMAGE_HEIGHT;
 
-                    // Movimiento: (Nº de Giros * Total de Items + Posición Final) * Altura del Item
-                    const finalPosition = -((SPIN_COUNT * TOTAL_ITEMS + winningIndex) * itemFullHeight);
+                    const finalPosition = -((SPIN_COUNT * computedImageHeight) + (winningIndex * computedImageHeight));
 
-                    reel.style.transition = `transform ${SPIN_DURATION_MS / 1000}s cubic-bezier(0.1, 0.5, 0.4, 1)`; // Curva de desaceleración
+                    reel.style.transition = `transform ${SPIN_DURATION_MS / 1000}s ease-out`;
                     reel.style.transform = `translateY(${finalPosition}px)`;
 
                     setTimeout(() => {
@@ -578,6 +560,7 @@
                     }, SPIN_DURATION_MS); 
                 });
             }
+
 
             async function startSequentialPlay() {
                 spinButton.disabled = true;
@@ -621,22 +604,24 @@
                 playAllButton.disabled = false;
             }
 
-            // --- FUNCIÓN DE INICIALIZACIÓN DE LISTENERS PARA LOS BOTONES PEQUEÑOS ---
+            // === FUNCIÓN AÑADIDA: Inicializa los listeners de los botones de la guía ===
             function setupRhythmGuideListeners() {
                 document.querySelectorAll('.rhythm-content .play-small-button').forEach(button => {
                     button.addEventListener('click', (event) => {
+                        // El índice del patrón está guardado en el atributo data-pattern-index
                         const patternIndex = parseInt(event.currentTarget.dataset.patternIndex);
                         playPatternSound(patternIndex);
                     });
                 });
             }
+            // =========================================================================
 
             // --- LISTENERS ---
             spinButton.addEventListener('click', startSpin);
             playAllButton.addEventListener('click', startSequentialPlay);
 
             // Inicialización de la guía rítmica y los reels
-            setupRhythmGuideListeners();
+            setupRhythmGuideListeners(); // 🛑 Llamamos a la nueva función
             reels.forEach((reel, index) => {
                 createFinalView(reel, index, 0); 
             });
