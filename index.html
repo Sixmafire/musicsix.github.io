@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juego de Patrones Rítmicos - Sin Deslizamiento</title>
+    <title>Juego de Patrones Rítmicos - Adaptable</title>
     
     <style>
         /* ======================================= */
-        /* === ESTILOS CSS === */
+        /* === ESTILOS GENERALES (ESCRITORIO) === */
         /* ======================================= */
 
         :root {
@@ -23,14 +23,11 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            /* 🛑 CLAVE PARA EVITAR DESLIZAMIENTO: 
-               Centramos el contenido y permitimos que la altura se ajuste al contenido, 
-               pero forzamos min-height: 100vh para ocupar toda la pantalla visible. */
             justify-content: center; 
             min-height: 100vh;
             background-color: #f4f4f9;
             margin: 0;
-            padding: 10px 0; /* Un poco de padding para respirar */
+            padding: 10px 0; 
         }
 
         h1 {
@@ -45,30 +42,30 @@
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             text-align: center;
-            margin-bottom: 10px; /* Margen reducido */
+            margin-bottom: 10px; 
+            /* Se define un ancho fijo para escritorio (4 ruedas horizontales) */
+            width: calc((var(--reel-width) * 4) + 60px); 
         }
 
         .slot-window {
-            display: flex;
+            display: flex; /* Horizontal en escritorio */
             gap: 10px;
             border: 5px solid var(--border-color);
             border-radius: 8px;
             overflow: hidden; 
             margin-bottom: 20px;
-            width: calc((var(--reel-width) * 4) + 30px);
+            /* Se elimina el cálculo de ancho aquí ya que el contenedor ya lo tiene */
+            width: 100%; 
+            padding: 0;
         }
 
         /* --- Rueda Individual (Reel) --- */
         .reel {
             width: var(--reel-width);
             height: var(--reel-height);
-            transform: translateY(0);
-            transition: transform var(--spin-duration) ease-out;
             border: 3px solid transparent; 
             box-sizing: border-box;
-            display: flex;
-            flex-direction: column; 
-            justify-content: space-between; 
+            flex-shrink: 0; /* Evita que las ruedas se encojan en escritorio */
         }
 
         .reel.highlight {
@@ -83,7 +80,7 @@
             object-fit: contain;
         }
 
-        /* --- Botones --- */
+        /* (Estilos de Botones y Mensajes sin cambios relevantes) */
         .play-pattern-button {
             background-color: #007bff;
             color: white;
@@ -132,35 +129,79 @@
             min-height: 40px; 
         }
 
-        /* ======================================= */
-        /* === ESTILOS DE LA FIRMA DEL AUTOR (Compacta y Estática) === */
-        /* ======================================= */
+        /* --- Firma del Autor --- */
         .footer-signature {
             font-size: 0.75em; 
             color: #999; 
             text-align: center;
             width: 100%;
-            /* 🛑 Quitamos position: absolute; y dejamos que fluya normalmente */
-            margin-top: 10px; /* Pequeña separación del contenido */
+            margin-top: 10px; 
             padding: 0; 
         }
 
-        /* --- Adaptación para Móviles --- */
+
+        /* ======================================= */
+        /* === ADAPTACIÓN A MÓVILES (VERTICAL) === */
+        /* ======================================= */
         @media (max-width: 600px) {
+            
+            /* 🛑 1. REAJUSTAR TAMAÑOS PARA MÓVIL */
             :root {
-                --reel-width: 80px;
-                --reel-height: 80px;
+                --reel-width: 90%; /* Las ruedas ocuparán el 90% del ancho disponible */
+                --reel-height: 120px; /* Tamaño ligeramente mayor para mejor visualización */
             }
+            
+            /* 🛑 2. HACER QUE EL CONTENEDOR SE AJUSTE AL ANCHO DE LA PANTALLA */
+            .slot-container {
+                padding: 15px;
+                width: 95%; 
+                box-sizing: border-box; 
+            }
+            
+            /* 🛑 3. REORGANIZAR LAS RUEDAS VERTICALMENTE */
             .slot-window {
+                flex-direction: column; /* Las ruedas se apilan */
                 gap: 5px;
-                width: calc((var(--reel-width) * 4) + 15px);
+                border: none; /* Quitamos el borde general del contenedor para que las ruedas se vean mejor */
+                padding: 0;
+                margin-bottom: 5px;
             }
+
+            /* 🛑 4. HACER QUE CADA RUEDA OCUPE EL 100% DEL ANCHO DISPONIBLE */
+            .reel {
+                width: 100%; 
+                height: var(--reel-height);
+                border: 2px solid var(--border-color); /* Agregamos borde a cada rueda individualmente */
+                border-radius: 5px;
+                margin-bottom: 5px;
+                display: flex;
+                flex-direction: row; /* Para poner el botón y la imagen horizontalmente */
+                align-items: center;
+                justify-content: space-between;
+                padding: 5px;
+            }
+            
+            /* 🛑 5. AJUSTAR ELEMENTOS INTERNOS DE LA RUEDA */
+            .reel img {
+                height: 100px;
+                width: 50%;
+                object-fit: contain;
+            }
+
+            .play-pattern-button {
+                width: 40%; 
+                padding: 8px 0;
+                font-size: 1em;
+            }
+            
+            /* Ajuste de botones principales */
             #spin-button, #play-all-button {
                 padding: 8px 15px;
                 font-size: 1em;
             }
-            .footer-signature {
-                margin-top: 15px;
+
+            #message {
+                font-size: 1em;
             }
         }
     </style>
@@ -296,6 +337,7 @@
                 img.id = `result-reel${index}-${patternIndex}`; 
                 img.dataset.patternIndex = patternIndex; 
 
+                // 🛑 En modo vertical, el botón y la imagen se colocan lado a lado, no uno encima del otro
                 reel.appendChild(playButton);
                 reel.appendChild(img);
                 
@@ -372,8 +414,8 @@
                 
                 const finalSources = currentWinningIndexes.map(index => patterns[index]);
                 const sourcesString = finalSources.join(' | ');
-                //messageDisplay.innerHTML = `¡Stop! Sources: <br> **${sourcesString}**`;
-                messageDisplay.innerHTML = `¡Stop!`;
+                messageDisplay.innerHTML = `¡Stop! Sources: <br> **${sourcesString}**`;
+                
                 currentWinningIndexes.forEach((patternIndex, index) => {
                     createFinalView(reels[index], index, patternIndex);
                 });
@@ -394,4 +436,4 @@
         });
     </script>
 </body>
-</html>
+</html>tml>
