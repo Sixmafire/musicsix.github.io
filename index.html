@@ -7,7 +7,7 @@
     
     <style>
         /* ======================================= */
-        /* === ESTILOS GENERALES (ESCRITORIO) === */
+        /* === ESTILOS CSS (SIN CAMBIOS) === */
         /* ======================================= */
 
         :root {
@@ -16,7 +16,6 @@
             --border-color: #333;
             --spin-duration: 2s;
             --highlight-color: #ffc107; 
-            /* Define el color del overlay negro semi-transparente */
             --overlay-color: rgba(0, 0, 0, 0.7); 
         }
 
@@ -25,23 +24,20 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center; 
+            justify-content: flex-start; 
             min-height: 100vh;
             margin: 0;
             padding: 10px 0; 
             overflow-x: hidden; 
-            position: relative; /* CLAVE: Necesario para que el overlay funcione */
-            color: #fff; /* Texto blanco sobre el fondo oscuro */
+            position: relative; 
+            color: #fff; 
             
-            /* --- 🛑 NUEVOS ESTILOS DE FONDO DE IMAGEN --- */
-            background-image: url('BG.jpg'); /* 🛑 REEMPLAZA ESTO con la URL de tu imagen */
+            background-image: url('BG.jpg'); 
             background-size: cover;
             background-position: center;
-            background-attachment: fixed; /* Opcional: fija la imagen al hacer scroll */
-            /* ------------------------------------------- */
+            background-attachment: fixed; 
         }
         
-        /* --- 🛑 NUEVO FILTRO NEGRO SEMI-TRANSPARENTE (OVERLAY) --- */
         body::before {
             content: '';
             position: absolute;
@@ -49,23 +45,118 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: var(--overlay-color); /* Usa el color definido en :root */
-            z-index: -1; /* Coloca el overlay detrás del contenido */
+            background-color: var(--overlay-color); 
+            z-index: -1; 
         }
-        /* -------------------------------------------------------- */
 
         h1 {
-            color: #fff; /* Título blanco para el fondo oscuro */
+            color: #fff; 
+            margin-top: 10px; 
             margin-bottom: 20px;
-            text-shadow: 2px 2px 4px #000; /* Hace el título más legible */
+            text-shadow: 2px 2px 4px #000; 
+        }
+        
+        /* ESTILOS: Guía Rítmica Desplegable */
+        .rhythm-guide {
+            width: 90%; 
+            max-width: 800px;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--highlight-color);
+            border-radius: 8px;
+            color: #fff;
+            padding: 0;
+            overflow: hidden;
         }
 
-        /* --- Contenedor Principal (Slot) --- */
+        .rhythm-guide summary {
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 10px 15px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1em;
+            list-style: none; 
+        }
+        
+        .rhythm-guide summary::-webkit-details-marker {
+            display: none;
+        }
+        .rhythm-guide summary::before {
+            content: '▶️ ';
+            display: inline-block;
+            transition: transform 0.2s;
+        }
+        .rhythm-guide[open] summary::before {
+            content: '🔽 ';
+        }
+
+        .rhythm-content {
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #333;
+            border-top: 1px solid #ccc;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            max-height: 400px; 
+            overflow-y: auto; 
+        }
+
+        .rhythm-item {
+            width: calc(50% - 15px); 
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 5px 0;
+            border-bottom: 1px dotted #ccc;
+        }
+        .rhythm-item:nth-last-child(-n+2) {
+            border-bottom: none;
+        }
+
+        .rhythm-item img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            background-color: #f8f8f8;
+            border-radius: 4px;
+        }
+        
+        /* === NUEVO ESTILO: Botón de Reproducción Pequeño === */
+        .play-small-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 50%; /* Lo hace redondo */
+            width: 30px; 
+            height: 30px;
+            line-height: 30px; /* Centra el contenido verticalmente */
+            padding: 0;
+            font-size: 0.7em;
+            cursor: pointer;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .rhythm-item p {
+            margin: 0;
+            font-size: 0.9em;
+            font-weight: bold;
+            flex-grow: 1; /* Permite que el texto ocupe el espacio restante */
+        }
+        /* --- Fin Nuevo Estilo --- */
+
+        /* --- Estilos del Slot y Botones (Sin Cambios) --- */
+
         .slot-container {
-            background: rgba(255, 255, 255, 0.1); /* Fondo del contenedor semi-transparente */
+            background: rgba(255, 255, 255, 0.1); 
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 0 25px rgba(0, 0, 0, 0.5); /* Sombra más oscura */
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.5); 
             text-align: center;
             margin-bottom: 10px; 
             width: calc((var(--reel-width) * 4) + 60px); 
@@ -74,7 +165,7 @@
         .slot-window {
             display: flex; 
             gap: 10px;
-            border: 5px solid var(--highlight-color); /* Borde claro para resaltar */
+            border: 5px solid var(--highlight-color); 
             border-radius: 8px;
             overflow: hidden; 
             margin-bottom: 20px;
@@ -82,7 +173,6 @@
             padding: 0;
         }
 
-        /* --- Rueda Individual (Reel) --- */
         .reel {
             width: var(--reel-width);
             height: var(--reel-height);
@@ -92,7 +182,7 @@
             display: flex;
             flex-direction: column; 
             justify-content: space-between;
-            background-color: rgba(255, 255, 255, 0.9); /* Fondo claro para las ruedas */
+            background-color: rgba(255, 255, 255, 0.9); 
             border-radius: 5px;
         }
         
@@ -108,7 +198,6 @@
             object-fit: contain;
         }
 
-        /* --- Botones --- */
         .play-pattern-button {
             background-color: #007bff;
             color: white;
@@ -142,22 +231,18 @@
             margin-right: 15px; 
         }
 
-        #spin-button:hover:not(:disabled) { background-color: #1e7e34; }
-        #play-all-button:hover:not(:disabled) { background-color: #e0a800; }
-        #spin-button:disabled, #play-all-button:disabled { background-color: #6c757d; cursor: not-allowed; }
-
         #message {
             margin-top: 15px;
             font-size: 1.2em;
             font-weight: bold;
-            color: var(--highlight-color); /* Mensaje destacado */
+            color: var(--highlight-color); 
             min-height: 40px; 
             text-shadow: 1px 1px 2px #000;
         }
 
         .footer-signature {
             font-size: 0.75em; 
-            color: #ccc; /* Color claro para la firma */
+            color: #ccc; 
             text-align: center;
             width: 100%;
             margin-top: 10px; 
@@ -167,7 +252,7 @@
 
 
         /* ======================================= */
-        /* === ADAPTACIÓN A MÓVILES (HORIZONTAL FORZADO) === */
+        /* === ADAPTACIÓN A MÓVILES (SIN CAMBIOS) === */
         /* ======================================= */
         @media (max-width: 600px) {
             
@@ -177,6 +262,19 @@
                 --gap: 1.5vw; 
             }
             
+            .rhythm-guide {
+                width: 98vw;
+                margin-top: 10px;
+            }
+            .rhythm-item {
+                width: 100%; 
+                justify-content: flex-start;
+                border-bottom: 1px dotted #ccc;
+            }
+            .rhythm-item:nth-last-child(1) {
+                border-bottom: none;
+            }
+
             .slot-container {
                 padding: 10px;
                 width: 95vw; 
@@ -216,6 +314,21 @@
             #message {
                 font-size: 0.9em;
             }
+            
+            /* Ajuste para móviles en la guía */
+            .rhythm-item {
+                flex-wrap: nowrap; /* Asegura que no salte de línea */
+            }
+            .rhythm-item img {
+                width: 40px; /* Un poco más pequeño */
+                height: 40px;
+            }
+            .play-small-button {
+                width: 25px;
+                height: 25px;
+                line-height: 25px;
+                font-size: 0.6em;
+            }
         }
     </style>
 </head>
@@ -223,6 +336,65 @@
 
     <h1>Patrones Rítmicos Musicales</h1>
     
+    <details class="rhythm-guide">
+        <summary>Guía de Figuras Rítmicas (Haz click aquí)</summary>
+        <div class="rhythm-content">
+            
+            <div class="rhythm-item">
+                <img src="00.png" alt="Dos Corcheas" data-pattern-index="0">
+                <button class="play-small-button" data-pattern-index="0">▶️</button>
+                <p>Dos Corcheas</p>
+            </div>
+            
+            <div class="rhythm-item">
+                <img src="01.png" alt="Corchea con puntillo y semicorchea" data-pattern-index="1">
+                <button class="play-small-button" data-pattern-index="1">▶️</button>
+                <p>Corchea con Puntillo y Semicorchea</p>
+            </div>
+            
+            <div class="rhythm-item">
+                <img src="02.png" alt="Dos semicorcheas y una corchea" data-pattern-index="2">
+                <button class="play-small-button" data-pattern-index="2">▶️</button>
+                <p>Dos Semicorcheas y una Corchea (Contratiempo)</p>
+            </div>
+            
+            <div class="rhythm-item">
+                <img src="03.png" alt="Semicorchea y corchea con puntillo" data-pattern-index="3">
+                <button class="play-small-button" data-pattern-index="3">▶️</button>
+                <p>Semicorchea y Corchea con Puntillo (Saltillo)</p>
+            </div>
+            
+            <div class="rhythm-item">
+                <img src="04.png" alt="Semicorchea, corchea y semicorchea" data-pattern-index="4">
+                <button class="play-small-button" data-pattern-index="4">▶️</button>
+                <p>Semicorchea, Corchea y Semicorchea</p>
+            </div>
+            
+            <div class="rhythm-item">
+                <img src="05.png" alt="Cuatro Semicorcheas" data-pattern-index="5">
+                <button class="play-small-button" data-pattern-index="5">▶️</button>
+                <p>Cuatro Semicorcheas</p>
+            </div>
+            
+            <div class="rhythm-item">
+                <img src="06.png" alt="Tresillo de Corcheas" data-pattern-index="6">
+                <button class="play-small-button" data-pattern-index="6">▶️</button>
+                <p>Tresillo de Corcheas</p>
+            </div>
+            
+            <div class="rhythm-item">
+                <img src="07.png" alt="Corchea y dos semicorcheas" data-pattern-index="7">
+                <button class="play-small-button" data-pattern-index="7">▶️</button>
+                <p>Corchea y Dos Semicorcheas</p>
+            </div>
+            
+            <div class="rhythm-item">
+                <img src="08.png" alt="Negra" data-pattern-index="8">
+                <button class="play-small-button" data-pattern-index="8">▶️</button>
+                <p>Negra</p>
+            </div>
+        </div>
+    </details>
     <div class="slot-container">
         <div class="slot-window">
             <div class="reel" id="reel-1"></div>
@@ -240,200 +412,236 @@
     <p class="footer-signature">Creado por: Sixmafire &reg;</p>
 
     <script>
-       /* ============================================== */
-/* === LÓGICA JAVASCRIPT (SOLFEO Y METRÓNOMO) === */
-/* ============================================== */
-document.addEventListener('DOMContentLoaded', () => {
-    const reels = [
-        document.getElementById('reel-1'),
-        document.getElementById('reel-2'),
-        document.getElementById('reel-3'),
-        document.getElementById('reel-4')
-    ];
-    const spinButton = document.getElementById('spin-button');
-    const playAllButton = document.getElementById('play-all-button');
-    const messageDisplay = document.getElementById('message');
-    
-    // --- CONSTANTES DE TEMPO ---
-    const TEMPO_MS = 750; 
-    const COUNTDOWN_BEATS = 4; // Mantenemos 4 beats totales
+        /* ============================================== */
+        /* === LÓGICA JAVASCRIPT (SE MODIFICA ABAJO) === */
+        /* ============================================== */
+        document.addEventListener('DOMContentLoaded', () => {
+            const reels = [
+                document.getElementById('reel-1'),
+                document.getElementById('reel-2'),
+                document.getElementById('reel-3'),
+                document.getElementById('reel-4')
+            ];
+            const spinButton = document.getElementById('spin-button');
+            const playAllButton = document.getElementById('play-all-button');
+            const messageDisplay = document.getElementById('message');
+            
+            // --- CONSTANTES DE TEMPO ---
+            const TEMPO_MS = 750; 
+            const COUNTDOWN_BEATS = 4;
 
-    const patterns = [
-        '00.png', '01.png', '02.png', '03.png', '04.png', 
-        '05.png', '06.png', '07.png', '08.png'  
-    ];
-    
-    const patternNames = [
-        'Negra', 'Dos Corcheas', 'Corchea y Dos Semicorcheas', 'Blanca', 
-        'Negra con Puntillo', 'Tresillo de Corcheas', 'Silencio de Negra', 
-        'Cuatro Semicorcheas', 'Galopa' 
-    ];
-    
-    // MAPEO DE SONIDOS
-    const soundsMap = {
-        0: new Audio('sounds/s_00.mp3'), 1: new Audio('sounds/s_01.mp3'), 
-        2: new Audio('sounds/s_02.mp3'), 3: new Audio('sounds/s_03.mp3'), 
-        4: new Audio('sounds/s_04.mp3'), 5: new Audio('sounds/s_05.mp3'), 
-        6: new Audio('sounds/s_06.mp3'), 7: new Audio('sounds/s_07.mp3'), 
-        8: new Audio('sounds/s_08.mp3'), 
-    };
-    const patternSounds = Object.values(soundsMap); 
-    
-    const metronomeTic = new Audio('sounds/metronome.mp3'); 
+            const patterns = [
+                '00.png', '01.png', '02.png', '03.png', '04.png', 
+                '05.png', '06.png', '07.png', '08.png'  
+            ];
+            
+            const patternNames = [
+                'Dos Corcheas', 'Corchea con Puntillo y Semicorchea', 'Dos Semicorcheas y Corchea', 'Semicorchea y Corchea con Puntillo', 
+                'Semicorchea, Corchea y Semicorchea', 'Cuatro Semicorcheas', 'Tresillo de Corcheas', 
+                'Corchea y Dos Semicorcheas', 'Negra' 
+            ];
+            
+            // MAPEO DE SONIDOS
+            const soundsMap = {
+                0: new Audio('sounds/s_00.mp3'), 1: new Audio('sounds/s_01.mp3'), 
+                2: new Audio('sounds/s_02.mp3'), 3: new Audio('sounds/s_03.mp3'), 
+                4: new Audio('sounds/s_04.mp3'), 5: new Audio('sounds/s_05.mp3'), 
+                6: new Audio('sounds/s_06.mp3'), 7: new Audio('sounds/s_07.mp3'), 
+                8: new Audio('sounds/s_08.mp3'), 
+            };
+            const patternSounds = Object.values(soundsMap); 
+            
+            const metronomeTic = new Audio('sounds/metronome.mp3'); 
 
-    const IMAGE_HEIGHT = 150; 
-    const SPIN_COUNT = 30; 
-    const TOTAL_ITEMS = patterns.length; 
-    const SPIN_DURATION_MS = 2000; 
-    
-    let currentWinningIndexes = [0, 0, 0, 0]; 
+            const IMAGE_HEIGHT = 150; 
+            const SPIN_COUNT = 30; 
+            const TOTAL_ITEMS = patterns.length; 
+            const SPIN_DURATION_MS = 2000; 
+            
+            let currentWinningIndexes = [0, 0, 0, 0]; 
 
-    
-    // --- FUNCIONES DE AUDIO Y VISTA ---
+            
+            // --- FUNCIONES DE AUDIO Y VISTA ---
 
-    function playPatternSound(patternIndex) {
-        patternSounds.forEach(sound => {
-            if (!sound.paused) {
-                sound.pause();
-                sound.currentTime = 0;
+            function playPatternSound(patternIndex) {
+                // Detiene todos los sonidos antes de reproducir uno nuevo
+                patternSounds.forEach(sound => {
+                    if (!sound.paused) {
+                        sound.pause();
+                        sound.currentTime = 0;
+                    }
+                });
+
+                const sound = soundsMap[patternIndex];
+                if (sound) {
+                    sound.currentTime = 0; 
+                    sound.play().catch(e => console.error("Error al reproducir el sonido:", e)); 
+                }
             }
+            
+            function playTic() {
+                metronomeTic.currentTime = 0;
+                metronomeTic.play().catch(e => console.error("Error al reproducir el tic:", e));
+            }
+
+            function highlightReel(reelElement, duration) {
+                reelElement.classList.add('highlight');
+                setTimeout(() => {
+                    reelElement.classList.remove('highlight');
+                }, duration);
+            }
+            
+            function initializeReel(reelElement) {
+                reelElement.innerHTML = ''; 
+                for (let i = 0; i < TOTAL_ITEMS * 5; i++) {
+                    const index = i % TOTAL_ITEMS;
+                    // Se crea el elemento de imagen para la animación
+                    const img = document.createElement('img'); 
+                    img.src = patterns[index];
+                    img.alt = patternNames[index]; 
+                    img.dataset.patternIndex = index;
+                    
+                    // Se crea el botón de reproducción (invisible durante el spin)
+                    const playButton = document.createElement('button');
+                    playButton.textContent = '▶️';
+                    playButton.className = 'play-pattern-button'; // Reutiliza el estilo del botón grande para este propósito
+                    playButton.style.opacity = '0'; // Oculto durante el giro
+                    
+                    const itemContainer = document.createElement('div');
+                    itemContainer.style.height = `${reelElement.offsetHeight}px`; // Ajusta la altura del contenedor para el giro
+                    itemContainer.style.display = 'flex';
+                    itemContainer.style.flexDirection = 'column';
+                    itemContainer.style.justifyContent = 'space-between';
+                    
+                    itemContainer.appendChild(playButton); // Se añade el botón (oculto)
+                    itemContainer.appendChild(img); // Se añade la imagen
+
+                    reelElement.appendChild(itemContainer);
+                }
+                
+                const computedReelHeight = reelElement.offsetHeight;
+                // La altura de la imagen se ajusta en CSS, pero se usa un cálculo aproximado o la altura real de un hijo si existe
+                const computedImageHeight = reelElement.querySelector('img') ? reelElement.querySelector('img').offsetHeight : IMAGE_HEIGHT; 
+
+                // Si se usa un contenedor para imagen + botón, la altura real del elemento es la del contenedor (reelElement.offsetHeight)
+                const itemFullHeight = computedReelHeight; 
+                
+                // Posición inicial: mueve la lista hacia arriba para mostrar el "fondo" antes de empezar a girar
+                const initialPosition = -((TOTAL_ITEMS * itemFullHeight) + itemFullHeight); 
+                
+                reelElement.style.transition = 'none'; 
+                reelElement.style.transform = `translateY(${initialPosition}px)`;
+            }
+
+
+            function createFinalView(reel, index, patternIndex) {
+                reel.innerHTML = ''; 
+                
+                const playButton = document.createElement('button');
+                playButton.textContent = '▶️ Escuchar'; 
+                playButton.className = 'play-pattern-button'; 
+                playButton.addEventListener('click', () => {
+                    playPatternSound(patternIndex);
+                });
+
+                const img = document.createElement('img');
+                img.src = patterns[patternIndex];
+                img.alt = patternNames[patternIndex]; 
+                img.id = `result-reel${index}-${patternIndex}`; 
+                img.dataset.patternIndex = patternIndex; 
+
+                // El orden se invierte en el DOM para que el botón aparezca arriba según el diseño inicial del reel
+                reel.appendChild(playButton); 
+                reel.appendChild(img);
+                
+                reel.style.transition = 'none'; 
+                reel.style.transform = `translateY(0px)`;
+            }
+
+            function spinReel(reelIndex) {
+                return new Promise((resolve) => {
+                    const reel = reels[reelIndex];
+                    const winningIndex = Math.floor(Math.random() * TOTAL_ITEMS);
+
+                    const computedReelHeight = reel.offsetHeight;
+                    // Ya que creamos contenedores, usamos la altura del reel como altura del "item"
+                    const itemFullHeight = computedReelHeight; 
+
+                    // Movimiento: (Nº de Giros * Total de Items + Posición Final) * Altura del Item
+                    const finalPosition = -((SPIN_COUNT * TOTAL_ITEMS + winningIndex) * itemFullHeight);
+
+                    reel.style.transition = `transform ${SPIN_DURATION_MS / 1000}s cubic-bezier(0.1, 0.5, 0.4, 1)`; // Curva de desaceleración
+                    reel.style.transform = `translateY(${finalPosition}px)`;
+
+                    setTimeout(() => {
+                        resolve(winningIndex); 
+                    }, SPIN_DURATION_MS); 
+                });
+            }
+
+            async function startSequentialPlay() {
+                spinButton.disabled = true;
+                playAllButton.disabled = true;
+
+                for (let i = 1; i <= COUNTDOWN_BEATS; i++) {
+                    messageDisplay.innerHTML = `🎵 **Contando... ${i}**`;
+                    playTic(); 
+                    await new Promise(r => setTimeout(r, TEMPO_MS));
+                }
+
+                messageDisplay.innerHTML = "🎶 **¡Solfeo Rítmico!**";
+                for (let i = 0; i < currentWinningIndexes.length; i++) {
+                    const patternIndex = currentWinningIndexes[i];
+                    const reelElement = reels[i];
+                    playTic(); 
+                    highlightReel(reelElement, TEMPO_MS); 
+                    playPatternSound(patternIndex); 
+                    await new Promise(r => setTimeout(r, TEMPO_MS));
+                }
+                messageDisplay.innerHTML = `¡Stop!`;
+                spinButton.disabled = false;
+                playAllButton.disabled = false;
+            }
+
+            async function startSpin() {
+                spinButton.disabled = true;
+                playAllButton.disabled = true;
+                messageDisplay.textContent = '¡Girando...! 🥁';
+                reels.forEach(initializeReel); 
+                await new Promise(r => setTimeout(r, 50)); 
+                const winningPatternIndexes = await Promise.all([
+                    spinReel(0), spinReel(1), spinReel(2), spinReel(3)
+                ]);
+                currentWinningIndexes = winningPatternIndexes;
+                messageDisplay.innerHTML = `¡Stop!`;
+                currentWinningIndexes.forEach((patternIndex, index) => {
+                    createFinalView(reels[index], index, patternIndex);
+                });
+                spinButton.disabled = false;
+                playAllButton.disabled = false;
+            }
+
+            // --- FUNCIÓN DE INICIALIZACIÓN DE LISTENERS PARA LOS BOTONES PEQUEÑOS ---
+            function setupRhythmGuideListeners() {
+                document.querySelectorAll('.rhythm-content .play-small-button').forEach(button => {
+                    button.addEventListener('click', (event) => {
+                        const patternIndex = parseInt(event.currentTarget.dataset.patternIndex);
+                        playPatternSound(patternIndex);
+                    });
+                });
+            }
+
+            // --- LISTENERS ---
+            spinButton.addEventListener('click', startSpin);
+            playAllButton.addEventListener('click', startSequentialPlay);
+
+            // Inicialización de la guía rítmica y los reels
+            setupRhythmGuideListeners();
+            reels.forEach((reel, index) => {
+                createFinalView(reel, index, 0); 
+            });
+            currentWinningIndexes = [0, 0, 0, 0];
         });
-
-        const sound = soundsMap[patternIndex];
-        if (sound) {
-            sound.currentTime = 0; 
-            sound.play().catch(e => console.error("Error al reproducir el sonido:", e)); 
-        }
-    }
-    
-    function playTic() {
-        metronomeTic.currentTime = 0;
-        metronomeTic.play().catch(e => console.error("Error al reproducir el tic:", e));
-    }
-
-    function highlightReel(reelElement, duration) {
-        reelElement.classList.add('highlight');
-        setTimeout(() => {
-            reelElement.classList.remove('highlight');
-        }, duration);
-    }
-    
-    function initializeReel(reelElement) {
-        reelElement.innerHTML = ''; 
-        for (let i = 0; i < TOTAL_ITEMS * 5; i++) {
-            const index = i % TOTAL_ITEMS;
-            const img = document.createElement('img');
-            img.src = patterns[index];
-            img.alt = patternNames[index]; 
-            img.dataset.patternIndex = index;
-            reelElement.appendChild(img);
-        }
-        
-        const computedReelHeight = reelElement.offsetHeight;
-        const computedImageHeight = computedReelHeight - (40 * (computedReelHeight / IMAGE_HEIGHT)); 
-        
-        const initialPosition = -((TOTAL_ITEMS * computedImageHeight) + (computedReelHeight - computedImageHeight));
-        
-        reelElement.style.transition = 'none'; 
-        reelElement.style.transform = `translateY(${initialPosition}px)`;
-    }
-
-    function createFinalView(reel, index, patternIndex) {
-        reel.innerHTML = ''; 
-        
-        const playButton = document.createElement('button');
-        playButton.textContent = '▶️ Escuchar'; 
-        playButton.className = 'play-pattern-button'; 
-        playButton.addEventListener('click', () => {
-            playPatternSound(patternIndex);
-        });
-
-        const img = document.createElement('img');
-        img.src = patterns[patternIndex];
-        img.alt = patternNames[patternIndex]; 
-        img.id = `result-reel${index}-${patternIndex}`; 
-        img.dataset.patternIndex = patternIndex; 
-
-        reel.appendChild(playButton);
-        reel.appendChild(img);
-        
-        reel.style.transition = 'none'; 
-        reel.style.transform = `translateY(0px)`;
-    }
-
-    function spinReel(reelIndex) {
-        return new Promise((resolve) => {
-            const reel = reels[reelIndex];
-            const winningIndex = Math.floor(Math.random() * TOTAL_ITEMS);
-
-            const computedReelHeight = reel.offsetHeight;
-            const computedImageHeight = reel.querySelector('img') ? reel.querySelector('img').offsetHeight : IMAGE_HEIGHT;
-
-            const finalPosition = -((SPIN_COUNT * computedImageHeight) + (winningIndex * computedImageHeight));
-
-            reel.style.transition = `transform ${SPIN_DURATION_MS / 1000}s ease-out`;
-            reel.style.transform = `translateY(${finalPosition}px)`;
-
-            setTimeout(() => {
-                resolve(winningIndex); 
-            }, SPIN_DURATION_MS); 
-        });
-    }
-
-
-    async function startSequentialPlay() {
-        spinButton.disabled = true;
-        playAllButton.disabled = true;
-
-        // 🛑 CAMBIO CLAVE: Bucle de 1 a 4
-        for (let i = 1; i <= COUNTDOWN_BEATS; i++) {
-            messageDisplay.innerHTML = `🎵 **Contando... ${i}**`;
-            playTic(); 
-            await new Promise(r => setTimeout(r, TEMPO_MS));
-        }
-
-        messageDisplay.innerHTML = "🎶 **¡Solfeo Rítmico!**";
-        for (let i = 0; i < currentWinningIndexes.length; i++) {
-            const patternIndex = currentWinningIndexes[i];
-            const reelElement = reels[i];
-            playTic(); 
-            highlightReel(reelElement, TEMPO_MS); 
-            playPatternSound(patternIndex); 
-            await new Promise(r => setTimeout(r, TEMPO_MS));
-        }
-        messageDisplay.innerHTML = `¡Stop!`;
-        spinButton.disabled = false;
-        playAllButton.disabled = false;
-    }
-
-    async function startSpin() {
-        spinButton.disabled = true;
-        playAllButton.disabled = true;
-        messageDisplay.textContent = '¡Girando...! 🥁';
-        reels.forEach(initializeReel); 
-        await new Promise(r => setTimeout(r, 50)); 
-        const winningPatternIndexes = await Promise.all([
-            spinReel(0), spinReel(1), spinReel(2), spinReel(3)
-        ]);
-        currentWinningIndexes = winningPatternIndexes;
-        messageDisplay.innerHTML = `¡Stop!`;
-        currentWinningIndexes.forEach((patternIndex, index) => {
-            createFinalView(reels[index], index, patternIndex);
-        });
-        spinButton.disabled = false;
-        playAllButton.disabled = false;
-    }
-
-    // --- LISTENERS ---
-    spinButton.addEventListener('click', startSpin);
-    playAllButton.addEventListener('click', startSequentialPlay);
-
-    // Inicialización
-    reels.forEach((reel, index) => {
-        createFinalView(reel, index, 0); 
-    });
-    currentWinningIndexes = [0, 0, 0, 0];
-});
     </script>
 </body>
 </html>
