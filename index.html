@@ -399,7 +399,6 @@
 
                 const finalSources = currentWinningIndexes.map(index => patterns[index]);
                 //messageDisplay.innerHTML = `¡Stop! Sources: <br> **${finalSources.join(' | ')}**`;
-                messageDisplay.innerHTML = `¡Stop!`;
                 spinButton.disabled = false;
                 playAllButton.disabled = false;
             }
@@ -420,8 +419,8 @@
                 
                 const finalSources = currentWinningIndexes.map(index => patterns[index]);
                 const sourcesString = finalSources.join(' | ');
-                messageDisplay.innerHTML = `¡Stop! Sources: <br> **${sourcesString}**`;
-                
+                //messageDisplay.innerHTML = `¡Stop! Sources: <br> **${sourcesString}**`;
+                 messageDisplay.innerHTML = `¡Stop!`;
                 currentWinningIndexes.forEach((patternIndex, index) => {
                     createFinalView(reels[index], index, patternIndex);
                 });
