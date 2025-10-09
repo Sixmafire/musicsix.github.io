@@ -16,6 +16,8 @@
             --border-color: #333;
             --spin-duration: 2s;
             --highlight-color: #ffc107; 
+            /* Define el color del overlay negro semi-transparente */
+            --overlay-color: rgba(0, 0, 0, 0.7); 
         }
 
         body {
@@ -25,32 +27,54 @@
             align-items: center;
             justify-content: center; 
             min-height: 100vh;
-            background-color: #f4f4f9;
             margin: 0;
             padding: 10px 0; 
-            overflow-x: hidden; /* Evita cualquier deslizamiento horizontal del cuerpo */
+            overflow-x: hidden; 
+            position: relative; /* CLAVE: Necesario para que el overlay funcione */
+            color: #fff; /* Texto blanco sobre el fondo oscuro */
+            
+            /* --- 🛑 NUEVOS ESTILOS DE FONDO DE IMAGEN --- */
+            background-image: url('BG.jpg'); /* 🛑 REEMPLAZA ESTO con la URL de tu imagen */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed; /* Opcional: fija la imagen al hacer scroll */
+            /* ------------------------------------------- */
         }
+        
+        /* --- 🛑 NUEVO FILTRO NEGRO SEMI-TRANSPARENTE (OVERLAY) --- */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--overlay-color); /* Usa el color definido en :root */
+            z-index: -1; /* Coloca el overlay detrás del contenido */
+        }
+        /* -------------------------------------------------------- */
 
         h1 {
-            color: #007bff;
+            color: #fff; /* Título blanco para el fondo oscuro */
             margin-bottom: 20px;
+            text-shadow: 2px 2px 4px #000; /* Hace el título más legible */
         }
 
         /* --- Contenedor Principal (Slot) --- */
         .slot-container {
-            background: #fff;
+            background: rgba(255, 255, 255, 0.1); /* Fondo del contenedor semi-transparente */
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.5); /* Sombra más oscura */
             text-align: center;
             margin-bottom: 10px; 
-            width: calc((var(--reel-width) * 4) + 60px); /* Ancho fijo para escritorio */
+            width: calc((var(--reel-width) * 4) + 60px); 
         }
 
         .slot-window {
-            display: flex; /* Horizontal siempre */
+            display: flex; 
             gap: 10px;
-            border: 5px solid var(--border-color);
+            border: 5px solid var(--highlight-color); /* Borde claro para resaltar */
             border-radius: 8px;
             overflow: hidden; 
             margin-bottom: 20px;
@@ -66,11 +90,11 @@
             box-sizing: border-box;
             flex-shrink: 0; 
             display: flex;
-            flex-direction: column; /* Vertical en escritorio */
+            flex-direction: column; 
             justify-content: space-between;
+            background-color: rgba(255, 255, 255, 0.9); /* Fondo claro para las ruedas */
+            border-radius: 5px;
         }
-        
-        /* Resto de estilos (highlight, botones, firma) se mantienen igual */
         
         .reel.highlight {
             border-color: var(--highlight-color);
@@ -84,6 +108,7 @@
             object-fit: contain;
         }
 
+        /* --- Botones --- */
         .play-pattern-button {
             background-color: #007bff;
             color: white;
@@ -98,43 +123,46 @@
         }
 
         #spin-button {
-            padding: 10px 30px;
-            font-size: 1.2em;
             background-color: #28a745;
             color: white;
-            border: none;
-            border-radius: 5-px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            margin-right: 15px; 
         }
         
         #play-all-button {
-            padding: 10px 30px;
-            font-size: 1.2em;
             background-color: #ffc107;
             color: #333;
+        }
+
+        #spin-button, #play-all-button {
+            padding: 10px 30px;
+            font-size: 1.2em;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.2s;
+            margin-right: 15px; 
         }
+
+        #spin-button:hover:not(:disabled) { background-color: #1e7e34; }
+        #play-all-button:hover:not(:disabled) { background-color: #e0a800; }
+        #spin-button:disabled, #play-all-button:disabled { background-color: #6c757d; cursor: not-allowed; }
 
         #message {
             margin-top: 15px;
             font-size: 1.2em;
             font-weight: bold;
-            color: var(--border-color);
+            color: var(--highlight-color); /* Mensaje destacado */
             min-height: 40px; 
+            text-shadow: 1px 1px 2px #000;
         }
 
         .footer-signature {
             font-size: 0.75em; 
-            color: #999; 
+            color: #ccc; /* Color claro para la firma */
             text-align: center;
             width: 100%;
             margin-top: 10px; 
             padding: 0; 
+            text-shadow: 1px 1px 2px #000;
         }
 
 
@@ -143,55 +171,43 @@
         /* ======================================= */
         @media (max-width: 600px) {
             
-            /* 🛑 1. REDEFINIR TAMAÑOS EN FUNCIÓN DEL ANCHO DE LA PANTALLA (vw) */
-            /* El 90% del ancho (90vw) se divide entre las 4 ruedas y los 3 espacios de 5px */
             :root {
-                --reel-width: 20vw; /* Cada rueda ~20% del ancho de la vista */
-                --reel-height: 20vw; /* Mantenemos cuadrado para mejor visualización */
-                --gap: 1.5vw; /* Separación pequeña entre ruedas */
+                --reel-width: 20vw; 
+                --reel-height: 20vw; 
+                --gap: 1.5vw; 
             }
             
-            /* 🛑 2. CONTENEDOR PRINCIPAL: Usamos vw para que se ajuste perfectamente */
             .slot-container {
                 padding: 10px;
-                /* El ancho será 4 * 20vw + 3 * 1.5vw + padding(aprox 4vw) = ~87.5vw. Se ajusta */
                 width: 95vw; 
                 box-sizing: border-box; 
             }
             
-            /* 🛑 3. CONTENEDOR DE RUEDAS: Aseguramos la alineación horizontal y ajustamos el gap */
             .slot-window {
-                gap: var(--gap); /* Gap más pequeño */
+                gap: var(--gap); 
                 width: 100%; 
                 border-width: 3px;
                 margin-bottom: 15px;
             }
 
-            /* 🛑 4. RUEDAS INDIVIDUALES: Ajuste de tamaño y elementos */
             .reel {
                 width: var(--reel-width); 
                 height: var(--reel-height);
                 border-width: 2px;
-                display: flex;
-                flex-direction: column; /* Volvemos a la vista vertical interna de escritorio */
-                justify-content: space-between;
                 padding: 0; 
             }
             
-            /* Ajuste del botón para que no desborde la rueda pequeña */
             .play-pattern-button {
                 width: 90%; 
                 padding: 1px 0;
-                font-size: 0.6em; /* Muy pequeña la fuente */
+                font-size: 0.6em; 
                 margin: 2px auto;
             }
 
-            /* Ajuste de la imagen para que quepa */
             .reel img {
-                height: calc(var(--reel-height) - 15px); /* Restamos el espacio del botón */
+                height: calc(var(--reel-height) - 15px); 
             }
             
-            /* Ajuste de botones y mensaje para que se vean bien */
             #spin-button, #play-all-button {
                 padding: 6px 10px;
                 font-size: 0.9em;
@@ -224,9 +240,7 @@
     <p class="footer-signature">Creado por: Sixmafire &reg;</p>
 
     <script>
-        /* ============================================== */
-        /* === LÓGICA JAVASCRIPT (SOLFEO Y METRÓNOMO) === */
-        /* ============================================== */
+        /* La lógica JavaScript se mantiene idéntica */
         document.addEventListener('DOMContentLoaded', () => {
             const reels = [
                 document.getElementById('reel-1'),
@@ -265,10 +279,6 @@
             
             const metronomeTic = new Audio('sounds/metronome.mp3'); 
 
-
-            // La altura real de la imagen en píxeles debe ser conocida para la animación de giro.
-            // Para asegurar la compatibilidad con el nuevo tamaño relativo (vw), 
-            // la lógica de spin usará la altura de la primera imagen al inicio (aunque sea un estimado).
             const IMAGE_HEIGHT = 150; 
             const SPIN_COUNT = 30; 
             const TOTAL_ITEMS = patterns.length; 
@@ -317,10 +327,8 @@
                     reelElement.appendChild(img);
                 }
                 
-                // Usamos la altura computada para el cálculo de la animación.
-                // Es crucial que esta medida se mantenga constante durante el giro.
                 const computedReelHeight = reelElement.offsetHeight;
-                const computedImageHeight = computedReelHeight - (40 * (computedReelHeight / IMAGE_HEIGHT)); // Ajuste proporcional
+                const computedImageHeight = computedReelHeight - (40 * (computedReelHeight / IMAGE_HEIGHT)); 
                 
                 const initialPosition = -((TOTAL_ITEMS * computedImageHeight) + (computedReelHeight - computedImageHeight));
                 
@@ -356,11 +364,9 @@
                     const reel = reels[reelIndex];
                     const winningIndex = Math.floor(Math.random() * TOTAL_ITEMS);
 
-                    // Recalcular la altura de la imagen en tiempo real para la animación
                     const computedReelHeight = reel.offsetHeight;
                     const computedImageHeight = reel.querySelector('img') ? reel.querySelector('img').offsetHeight : IMAGE_HEIGHT;
 
-                    // Posición final basada en la altura computada para mantener la proporción de la animación.
                     const finalPosition = -((SPIN_COUNT * computedImageHeight) + (winningIndex * computedImageHeight));
 
                     reel.style.transition = `transform ${SPIN_DURATION_MS / 1000}s ease-out`;
@@ -373,32 +379,24 @@
             }
 
 
-            // (Las funciones de solfeo y control de eventos se mantienen iguales)
             async function startSequentialPlay() {
                 spinButton.disabled = true;
                 playAllButton.disabled = true;
-
                 for (let i = COUNTDOWN_BEATS; i > 0; i--) {
                     messageDisplay.innerHTML = `🎵 **Contando... ${i}**`;
                     playTic(); 
                     await new Promise(r => setTimeout(r, TEMPO_MS));
                 }
-                
                 messageDisplay.innerHTML = "🎶 **¡Solfeo Rítmico!**";
-                
                 for (let i = 0; i < currentWinningIndexes.length; i++) {
                     const patternIndex = currentWinningIndexes[i];
                     const reelElement = reels[i];
-
                     playTic(); 
                     highlightReel(reelElement, TEMPO_MS); 
                     playPatternSound(patternIndex); 
-
                     await new Promise(r => setTimeout(r, TEMPO_MS));
                 }
-
-                const finalSources = currentWinningIndexes.map(index => patterns[index]);
-                //messageDisplay.innerHTML = `¡Stop! Sources: <br> **${finalSources.join(' | ')}**`;
+                messageDisplay.innerHTML = `¡Stop!`;
                 spinButton.disabled = false;
                 playAllButton.disabled = false;
             }
@@ -407,24 +405,16 @@
                 spinButton.disabled = true;
                 playAllButton.disabled = true;
                 messageDisplay.textContent = '¡Girando...! 🥁';
-
                 reels.forEach(initializeReel); 
                 await new Promise(r => setTimeout(r, 50)); 
-                
                 const winningPatternIndexes = await Promise.all([
                     spinReel(0), spinReel(1), spinReel(2), spinReel(3)
                 ]);
-                
                 currentWinningIndexes = winningPatternIndexes;
-                
-                const finalSources = currentWinningIndexes.map(index => patterns[index]);
-                const sourcesString = finalSources.join(' | ');
-                //messageDisplay.innerHTML = `¡Stop! Sources: <br> **${sourcesString}**`;
-                 messageDisplay.innerHTML = `¡Stop!`;
+                messageDisplay.innerHTML = `¡Stop!`;
                 currentWinningIndexes.forEach((patternIndex, index) => {
                     createFinalView(reels[index], index, patternIndex);
                 });
-                
                 spinButton.disabled = false;
                 playAllButton.disabled = false;
             }
