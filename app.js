@@ -59,6 +59,7 @@ const Model = (function() {
         setWinningIndexes,
     };
 })();
+
 // --- CONTROLADOR: INTERACCIÓN y MANIPULACIÓN DEL DOM ---
 document.addEventListener('DOMContentLoaded', () => {
     // Referencias del DOM
