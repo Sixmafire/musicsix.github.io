@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juego de Patrones Rítmicos - Slot Horizontal Móvil</title>
+    <title>Juego de Patrones Rítmicos - V 1.0</title>
     
     <style>
         /* ======================================= */
@@ -398,8 +398,8 @@
                 }
 
                 const finalSources = currentWinningIndexes.map(index => patterns[index]);
-                messageDisplay.innerHTML = `¡Stop! Sources: <br> **${finalSources.join(' | ')}**`;
-                
+                //messageDisplay.innerHTML = `¡Stop! Sources: <br> **${finalSources.join(' | ')}**`;
+                messageDisplay.innerHTML = `¡Stop!`;
                 spinButton.disabled = false;
                 playAllButton.disabled = false;
             }
