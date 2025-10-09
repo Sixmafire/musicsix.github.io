@@ -3,341 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juego de Patrones Rítmicos - V 1.0</title>
+    <title>Juego de Patrones Rítmicos - V 1.0 (MVC)</title>
     
-    <style>
-        /* ======================================= */
-        /* === ESTILOS GENERALES (ESCRITORIO) === */
-        /* ======================================= */
-
-        :root {
-            --reel-width: 150px; 
-            --reel-height: 150px;
-            --border-color: #333;
-            --spin-duration: 2s;
-            --highlight-color: #ffc107; 
-            --overlay-color: rgba(0, 0, 0, 0.7); 
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start; 
-            min-height: 100vh;
-            margin: 0;
-            padding: 10px 0; 
-            overflow-x: hidden; 
-            position: relative; 
-            color: #fff; 
-            
-            background-image: url('BG.jpg'); 
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed; 
-        }
-        
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: var(--overlay-color); 
-            z-index: -1; 
-        }
-
-        h1 {
-            color: #fff; 
-            margin-top: 10px; 
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px #000; 
-        }
-        
-        /* 🛑 NUEVOS ESTILOS: Guía Rítmica Desplegable */
-        .rhythm-guide {
-            width: 90%; 
-            max-width: 800px;
-            margin-bottom: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid var(--highlight-color);
-            border-radius: 8px;
-            color: #fff;
-            padding: 0;
-            overflow: hidden;
-        }
-
-        .rhythm-guide summary {
-            background-color: rgba(0, 0, 0, 0.5);
-            padding: 10px 15px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 1.1em;
-            list-style: none; 
-        }
-        
-        /* Estilo para el ícono desplegable */
-        .rhythm-guide summary::-webkit-details-marker {
-            display: none;
-        }
-        .rhythm-guide summary::before {
-            content: '▶️ ';
-            display: inline-block;
-            transition: transform 0.2s;
-        }
-        .rhythm-guide[open] summary::before {
-            content: '🔽 ';
-        }
-
-        .rhythm-content {
-            padding: 15px;
-            background-color: rgba(255, 255, 255, 0.95);
-            color: #333;
-            border-top: 1px solid #ccc;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            justify-content: center;
-            max-height: 400px; 
-            overflow-y: auto; 
-        }
-
-        .rhythm-item {
-            width: calc(50% - 15px); 
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 5px 0;
-            border-bottom: 1px dotted #ccc;
-        }
-        .rhythm-item:nth-last-child(-n+2) {
-            border-bottom: none;
-        }
-
-        .rhythm-item img {
-            width: 50px;
-            height: 50px;
-            object-fit: contain;
-            background-color: #f8f8f8;
-            border-radius: 4px;
-            flex-shrink: 0;
-        }
-        
-        /* === AÑADIDO: Estilo para el botón de reproducción en la guía === */
-        .play-small-button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 50%; /* Lo hace redondo */
-            width: 30px; 
-            height: 30px;
-            line-height: 30px; 
-            padding: 0;
-            font-size: 0.7em;
-            cursor: pointer;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-            margin-right: 5px; /* Separación del texto */
-        }
-        /* =============================================================== */
-
-        .rhythm-item p {
-            margin: 0;
-            font-size: 0.9em;
-            font-weight: bold;
-            flex-grow: 1; /* Permite que ocupe el espacio restante */
-        }
-        /* ------------------------------------------- */
-
-
-        /* --- Contenedor Principal (Slot) --- */
-        .slot-container {
-            background: rgba(255, 255, 255, 0.1); 
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 25px rgba(0, 0, 0, 0.5); 
-            text-align: center;
-            margin-bottom: 10px; 
-            width: calc((var(--reel-width) * 4) + 60px); 
-        }
-
-        /* --- El resto de estilos del slot y botones se mantienen --- */
-
-        .slot-window {
-            display: flex; 
-            gap: 10px;
-            border: 5px solid var(--highlight-color); 
-            border-radius: 8px;
-            overflow: hidden; 
-            margin-bottom: 20px;
-            width: 100%; 
-            padding: 0;
-        }
-
-        .reel {
-            width: var(--reel-width);
-            height: var(--reel-height);
-            border: 3px solid transparent; 
-            box-sizing: border-box;
-            flex-shrink: 0; 
-            display: flex;
-            flex-direction: column; 
-            justify-content: space-between;
-            background-color: rgba(255, 255, 255, 0.9); 
-            border-radius: 5px;
-        }
-        
-        .reel.highlight {
-            border-color: var(--highlight-color);
-            box-shadow: 0 0 10px var(--highlight-color);
-        }
-
-        .reel img {
-            width: 100%;
-            height: calc(var(--reel-height) - 40px); 
-            display: block;
-            object-fit: contain;
-        }
-
-        .play-pattern-button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 3px 0; 
-            font-size: 0.9em;
-            cursor: pointer;
-            margin: 5px auto;
-            display: block;
-            width: 80%;
-        }
-
-        #spin-button {
-            background-color: #28a745;
-            color: white;
-        }
-        
-        #play-all-button {
-            background-color: #ffc107;
-            color: #333;
-        }
-
-        #spin-button, #play-all-button {
-            padding: 10px 30px;
-            font-size: 1.2em;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            margin-right: 15px; 
-        }
-
-        #message {
-            margin-top: 15px;
-            font-size: 1.2em;
-            font-weight: bold;
-            color: var(--highlight-color); 
-            min-height: 40px; 
-            text-shadow: 1px 1px 2px #000;
-        }
-
-        .footer-signature {
-            font-size: 0.75em; 
-            color: #ccc; 
-            text-align: center;
-            width: 100%;
-            margin-top: 10px; 
-            padding: 0; 
-            text-shadow: 1px 1px 2px #000;
-        }
-
-
-        /* ======================================= */
-        /* === ADAPTACIÓN A MÓVILES === */
-        /* ======================================= */
-        @media (max-width: 600px) {
-            
-            :root {
-                --reel-width: 20vw; 
-                --reel-height: 20vw; 
-                --gap: 1.5vw; 
-            }
-            
-            /* Ajuste para móvil de la Guía Rítmica */
-            .rhythm-guide {
-                width: 98vw;
-                margin-top: 10px;
-            }
-            .rhythm-item {
-                width: 100%; 
-                justify-content: flex-start;
-                border-bottom: 1px dotted #ccc;
-            }
-            .rhythm-item:nth-last-child(1) {
-                border-bottom: none;
-            }
-
-            .slot-container {
-                padding: 10px;
-                width: 95vw; 
-                box-sizing: border-box; 
-            }
-            
-            .slot-window {
-                gap: var(--gap); 
-                width: 100%; 
-                border-width: 3px;
-                margin-bottom: 15px;
-            }
-
-            .reel {
-                width: var(--reel-width); 
-                height: var(--reel-height);
-                border-width: 2px;
-                padding: 0; 
-            }
-            
-            .play-pattern-button {
-                width: 90%; 
-                padding: 1px 0;
-                font-size: 0.6em; 
-                margin: 2px auto;
-            }
-
-            .reel img {
-                height: calc(var(--reel-height) - 15px); 
-            }
-            
-            #spin-button, #play-all-button {
-                padding: 6px 10px;
-                font-size: 0.9em;
-            }
-
-            #message {
-                font-size: 0.9em;
-            }
-            
-            /* Ajuste para móviles en la guía */
-            .rhythm-item {
-                flex-wrap: nowrap; 
-            }
-            .rhythm-item img {
-                width: 40px; 
-                height: 40px;
-            }
-            .play-small-button {
-                width: 25px;
-                height: 25px;
-                line-height: 25px;
-                font-size: 0.6em;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -346,57 +14,56 @@
     <details class="rhythm-guide">
         <summary>Guía de Figuras Rítmicas (Haz click aquí)</summary>
         <div class="rhythm-content">
-            
             <div class="rhythm-item">
-                <img src="00.png" alt="Dos Corcheas" data-pattern-index="0">
+                <img src="images/00.png" alt="Dos Corcheas" data-pattern-index="0">
                 <button class="play-small-button" data-pattern-index="0">▶️</button>
                 <p>Dos Corcheas</p>
             </div>
             
             <div class="rhythm-item">
-                <img src="01.png" alt="Corchea con puntillo y semicorchea" data-pattern-index="1">
+                <img src="images/01.png" alt="Corchea con puntillo y semicorchea" data-pattern-index="1">
                 <button class="play-small-button" data-pattern-index="1">▶️</button>
                 <p>Corchea con Puntillo y Semicorchea</p>
             </div>
             
             <div class="rhythm-item">
-                <img src="02.png" alt="Dos semicorcheas y una corchea" data-pattern-index="2">
+                <img src="images/02.png" alt="Dos semicorcheas y una corchea" data-pattern-index="2">
                 <button class="play-small-button" data-pattern-index="2">▶️</button>
                 <p>Dos Semicorcheas y una Corchea</p>
             </div>
             
             <div class="rhythm-item">
-                <img src="03.png" alt="Semicorchea y corchea con puntillo" data-pattern-index="3">
+                <img src="images/03.png" alt="Semicorchea y corchea con puntillo" data-pattern-index="3">
                 <button class="play-small-button" data-pattern-index="3">▶️</button>
                 <p>Semicorchea y Corchea con Puntillo</p>
             </div>
             
             <div class="rhythm-item">
-                <img src="04.png" alt="Semicorchea, corchea y semicorchea" data-pattern-index="4">
+                <img src="images/04.png" alt="Semicorchea, corchea y semicorchea" data-pattern-index="4">
                 <button class="play-small-button" data-pattern-index="4">▶️</button>
                 <p>Semicorchea, Corchea y Semicorchea</p>
             </div>
             
             <div class="rhythm-item">
-                <img src="05.png" alt="Cuatro Semicorcheas" data-pattern-index="5">
+                <img src="images/05.png" alt="Cuatro Semicorcheas" data-pattern-index="5">
                 <button class="play-small-button" data-pattern-index="5">▶️</button>
                 <p>Cuatro Semicorcheas</p>
             </div>
             
             <div class="rhythm-item">
-                <img src="06.png" alt="Tresillo de Corcheas" data-pattern-index="6">
+                <img src="images/06.png" alt="Tresillo de Corcheas" data-pattern-index="6">
                 <button class="play-small-button" data-pattern-index="6">▶️</button>
                 <p>Tresillo de Corcheas</p>
             </div>
             
             <div class="rhythm-item">
-                <img src="07.png" alt="Corchea y dos semicorcheas" data-pattern-index="7">
+                <img src="images/07.png" alt="Corchea y dos semicorcheas" data-pattern-index="7">
                 <button class="play-small-button" data-pattern-index="7">▶️</button>
                 <p>Corchea y Dos Semicorcheas</p>
             </div>
             
             <div class="rhythm-item">
-                <img src="08.png" alt="Negra" data-pattern-index="8">
+                <img src="images/08.png" alt="Negra" data-pattern-index="8">
                 <button class="play-small-button" data-pattern-index="8">▶️</button>
                 <p>Negra</p>
             </div>
@@ -419,214 +86,6 @@
     
     <p class="footer-signature">Creado por: Sixmafire &reg;</p>
 
-    <script>
-        /* ============================================== */
-        /* === LÓGICA JAVASCRIPT (AGREGANDO LISTENERS) === */
-        /* ============================================== */
-        document.addEventListener('DOMContentLoaded', () => {
-            const reels = [
-                document.getElementById('reel-1'),
-                document.getElementById('reel-2'),
-                document.getElementById('reel-3'),
-                document.getElementById('reel-4')
-            ];
-            const spinButton = document.getElementById('spin-button');
-            const playAllButton = document.getElementById('play-all-button');
-            const messageDisplay = document.getElementById('message');
-            
-            // --- CONSTANTES DE TEMPO ---
-            const TEMPO_MS = 750; 
-            const COUNTDOWN_BEATS = 4;
-
-            const patterns = [
-                '00.png', '01.png', '02.png', '03.png', '04.png', 
-                '05.png', '06.png', '07.png', '08.png'  
-            ];
-            
-            const patternNames = [
-                'Dos Corcheas', 'Corchea con Puntillo y Semicorchea', 'Dos Semicorcheas y Corchea', 'Semicorchea y Corchea con Puntillo', 
-                'Semicorchea, Corchea y Semicorchea', 'Cuatro Semicorcheas', 'Tresillo de Corcheas', 
-                'Corchea y Dos Semicorcheas', 'Negra' 
-            ];
-            
-            // MAPEO DE SONIDOS
-            const soundsMap = {
-                0: new Audio('sounds/s_00.mp3'), 1: new Audio('sounds/s_01.mp3'), 
-                2: new Audio('sounds/s_02.mp3'), 3: new Audio('sounds/s_03.mp3'), 
-                4: new Audio('sounds/s_04.mp3'), 5: new Audio('sounds/s_05.mp3'), 
-                6: new Audio('sounds/s_06.mp3'), 7: new Audio('sounds/s_07.mp3'), 
-                8: new Audio('sounds/s_08.mp3'), 
-            };
-            const patternSounds = Object.values(soundsMap); 
-            
-            const metronomeTic = new Audio('sounds/metronome.mp3'); 
-
-            const IMAGE_HEIGHT = 150; 
-            const SPIN_COUNT = 30; 
-            const TOTAL_ITEMS = patterns.length; 
-            const SPIN_DURATION_MS = 2000; 
-            
-            let currentWinningIndexes = [0, 0, 0, 0]; 
-
-            
-            // --- FUNCIONES DE AUDIO Y VISTA ---
-
-            function playPatternSound(patternIndex) {
-                patternSounds.forEach(sound => {
-                    if (!sound.paused) {
-                        sound.pause();
-                        sound.currentTime = 0;
-                    }
-                });
-
-                const sound = soundsMap[patternIndex];
-                if (sound) {
-                    sound.currentTime = 0; 
-                    sound.play().catch(e => console.error("Error al reproducir el sonido:", e)); 
-                }
-            }
-            
-            function playTic() {
-                metronomeTic.currentTime = 0;
-                metronomeTic.play().catch(e => console.error("Error al reproducir el tic:", e));
-            }
-
-            function highlightReel(reelElement, duration) {
-                reelElement.classList.add('highlight');
-                setTimeout(() => {
-                    reelElement.classList.remove('highlight');
-                }, duration);
-            }
-            
-            function initializeReel(reelElement) {
-                reelElement.innerHTML = ''; 
-                for (let i = 0; i < TOTAL_ITEMS * 5; i++) {
-                    const index = i % TOTAL_ITEMS;
-                    const img = document.createElement('img');
-                    img.src = patterns[index];
-                    img.alt = patternNames[index]; 
-                    img.dataset.patternIndex = index;
-                    reelElement.appendChild(img);
-                }
-                
-                const computedReelHeight = reelElement.offsetHeight;
-                const computedImageHeight = computedReelHeight - (40 * (computedReelHeight / IMAGE_HEIGHT)); 
-                
-                const initialPosition = -((TOTAL_ITEMS * computedImageHeight) + (computedReelHeight - computedImageHeight));
-                
-                reelElement.style.transition = 'none'; 
-                reelElement.style.transform = `translateY(${initialPosition}px)`;
-            }
-
-            function createFinalView(reel, index, patternIndex) {
-                reel.innerHTML = ''; 
-                
-                // Botón de reproducción en la vista final
-                const playButton = document.createElement('button');
-                playButton.textContent = '▶️ Escuchar'; 
-                playButton.className = 'play-pattern-button'; 
-                playButton.addEventListener('click', () => {
-                    playPatternSound(patternIndex);
-                });
-
-                const img = document.createElement('img');
-                img.src = patterns[patternIndex];
-                img.alt = patternNames[patternIndex]; 
-                img.id = `result-reel${index}-${patternIndex}`; 
-                img.dataset.patternIndex = patternIndex; 
-
-                reel.appendChild(playButton);
-                reel.appendChild(img);
-                
-                reel.style.transition = 'none'; 
-                reel.style.transform = `translateY(0px)`;
-            }
-
-            function spinReel(reelIndex) {
-                return new Promise((resolve) => {
-                    const reel = reels[reelIndex];
-                    const winningIndex = Math.floor(Math.random() * TOTAL_ITEMS);
-
-                    const computedReelHeight = reel.offsetHeight;
-                    const computedImageHeight = reel.querySelector('img') ? reel.querySelector('img').offsetHeight : IMAGE_HEIGHT;
-
-                    const finalPosition = -((SPIN_COUNT * computedImageHeight) + (winningIndex * computedImageHeight));
-
-                    reel.style.transition = `transform ${SPIN_DURATION_MS / 1000}s ease-out`;
-                    reel.style.transform = `translateY(${finalPosition}px)`;
-
-                    setTimeout(() => {
-                        resolve(winningIndex); 
-                    }, SPIN_DURATION_MS); 
-                });
-            }
-
-
-            async function startSequentialPlay() {
-                spinButton.disabled = true;
-                playAllButton.disabled = true;
-
-                for (let i = 1; i <= COUNTDOWN_BEATS; i++) {
-                    messageDisplay.innerHTML = `🎵 **Contando... ${i}**`;
-                    playTic(); 
-                    await new Promise(r => setTimeout(r, TEMPO_MS));
-                }
-
-                messageDisplay.innerHTML = "🎶 **¡Solfeo Rítmico!**";
-                for (let i = 0; i < currentWinningIndexes.length; i++) {
-                    const patternIndex = currentWinningIndexes[i];
-                    const reelElement = reels[i];
-                    playTic(); 
-                    highlightReel(reelElement, TEMPO_MS); 
-                    playPatternSound(patternIndex); 
-                    await new Promise(r => setTimeout(r, TEMPO_MS));
-                }
-                messageDisplay.innerHTML = `¡Stop!`;
-                spinButton.disabled = false;
-                playAllButton.disabled = false;
-            }
-
-            async function startSpin() {
-                spinButton.disabled = true;
-                playAllButton.disabled = true;
-                messageDisplay.textContent = '¡Girando...! 🥁';
-                reels.forEach(initializeReel); 
-                await new Promise(r => setTimeout(r, 50)); 
-                const winningPatternIndexes = await Promise.all([
-                    spinReel(0), spinReel(1), spinReel(2), spinReel(3)
-                ]);
-                currentWinningIndexes = winningPatternIndexes;
-                messageDisplay.innerHTML = `¡Stop!`;
-                currentWinningIndexes.forEach((patternIndex, index) => {
-                    createFinalView(reels[index], index, patternIndex);
-                });
-                spinButton.disabled = false;
-                playAllButton.disabled = false;
-            }
-
-            // === FUNCIÓN AÑADIDA: Inicializa los listeners de los botones de la guía ===
-            function setupRhythmGuideListeners() {
-                document.querySelectorAll('.rhythm-content .play-small-button').forEach(button => {
-                    button.addEventListener('click', (event) => {
-                        // El índice del patrón está guardado en el atributo data-pattern-index
-                        const patternIndex = parseInt(event.currentTarget.dataset.patternIndex);
-                        playPatternSound(patternIndex);
-                    });
-                });
-            }
-            // =========================================================================
-
-            // --- LISTENERS ---
-            spinButton.addEventListener('click', startSpin);
-            playAllButton.addEventListener('click', startSequentialPlay);
-
-            // Inicialización de la guía rítmica y los reels
-            setupRhythmGuideListeners(); // 🛑 Llamamos a la nueva función
-            reels.forEach((reel, index) => {
-                createFinalView(reel, index, 0); 
-            });
-            currentWinningIndexes = [0, 0, 0, 0];
-        });
-    </script>
+    <script src="app.js"></script>
 </body>
 </html>
