@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juego de Patrones Rítmicos - Metrónomo Continuo</title>
+    <title>Juego de Patrones Rítmicos - Sin Deslizamiento</title>
     
     <style>
         /* ======================================= */
@@ -23,15 +23,19 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            /* 🛑 CLAVE PARA EVITAR DESLIZAMIENTO: 
+               Centramos el contenido y permitimos que la altura se ajuste al contenido, 
+               pero forzamos min-height: 100vh para ocupar toda la pantalla visible. */
+            justify-content: center; 
             min-height: 100vh;
             background-color: #f4f4f9;
             margin: 0;
+            padding: 10px 0; /* Un poco de padding para respirar */
         }
 
         h1 {
             color: #007bff;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
         /* --- Contenedor Principal (Slot) --- */
@@ -41,6 +45,7 @@
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             text-align: center;
+            margin-bottom: 10px; /* Margen reducido */
         }
 
         .slot-window {
@@ -127,6 +132,19 @@
             min-height: 40px; 
         }
 
+        /* ======================================= */
+        /* === ESTILOS DE LA FIRMA DEL AUTOR (Compacta y Estática) === */
+        /* ======================================= */
+        .footer-signature {
+            font-size: 0.75em; 
+            color: #999; 
+            text-align: center;
+            width: 100%;
+            /* 🛑 Quitamos position: absolute; y dejamos que fluya normalmente */
+            margin-top: 10px; /* Pequeña separación del contenido */
+            padding: 0; 
+        }
+
         /* --- Adaptación para Móviles --- */
         @media (max-width: 600px) {
             :root {
@@ -140,6 +158,9 @@
             #spin-button, #play-all-button {
                 padding: 8px 15px;
                 font-size: 1em;
+            }
+            .footer-signature {
+                margin-top: 15px;
             }
         }
     </style>
@@ -161,6 +182,8 @@
         
         <div id="message">Pulsa "GIRAR" para comenzar.</div>
     </div>
+    
+    <p class="footer-signature">Creado por: Sixmafire &reg;</p>
 
     <script>
         /* ============================================== */
@@ -178,7 +201,6 @@
             const messageDisplay = document.getElementById('message');
             
             // --- CONSTANTES DE TEMPO ---
-            // 80 BPM = 750ms por negra
             const TEMPO_MS = 750; 
             const COUNTDOWN_BEATS = 4;
 
@@ -203,8 +225,6 @@
             };
             const patternSounds = Object.values(soundsMap); 
             
-            // Sonido de Metrónomo "Tic" (Debe ser un sonido corto y seco)
-            // ⚠️ Asegúrate de que este archivo exista en tu carpeta 'sounds/'
             const metronomeTic = new Audio('sounds/metronome.mp3'); 
 
 
@@ -218,11 +238,7 @@
             
             // --- FUNCIONES DE AUDIO Y VISTA ---
 
-            /**
-             * Reproduce un sonido de Patrón Rítmico. Solo detiene OTROS sonidos de patrón.
-             */
             function playPatternSound(patternIndex) {
-                // 1. Detener y reiniciar solo los sonidos de patrones rítmicos para evitar superposición.
                 patternSounds.forEach(sound => {
                     if (!sound.paused) {
                         sound.pause();
@@ -230,7 +246,6 @@
                     }
                 });
 
-                // 2. Reproducir el sonido seleccionado
                 const sound = soundsMap[patternIndex];
                 if (sound) {
                     sound.currentTime = 0; 
@@ -238,11 +253,7 @@
                 }
             }
             
-            /**
-             * Reproduce el sonido Metrónomo "Tic"
-             */
             function playTic() {
-                // 🛑 No detenemos el metrónomo aquí, solo lo reiniciamos para el siguiente tic.
                 metronomeTic.currentTime = 0;
                 metronomeTic.play().catch(e => console.error("Error al reproducir el tic:", e));
             }
@@ -317,7 +328,7 @@
                 // 1. CUENTA REGRESIVA
                 for (let i = COUNTDOWN_BEATS; i > 0; i--) {
                     messageDisplay.innerHTML = `🎵 **Contando... ${i}**`;
-                    playTic(); // Tic para el conteo
+                    playTic(); 
                     await new Promise(r => setTimeout(r, TEMPO_MS));
                 }
                 
@@ -328,9 +339,9 @@
                     const patternIndex = currentWinningIndexes[i];
                     const reelElement = reels[i];
 
-                    playTic(); // 🛑 Tic justo antes del patrón (metrónomo continuo)
+                    playTic(); 
                     highlightReel(reelElement, TEMPO_MS); 
-                    playPatternSound(patternIndex); // Suena con el metrónomo
+                    playPatternSound(patternIndex); 
 
                     await new Promise(r => setTimeout(r, TEMPO_MS));
                 }
@@ -361,8 +372,8 @@
                 
                 const finalSources = currentWinningIndexes.map(index => patterns[index]);
                 const sourcesString = finalSources.join(' | ');
-                messageDisplay.innerHTML = `¡Stop! Sources: <br> **${sourcesString}**`;
-                
+                //messageDisplay.innerHTML = `¡Stop! Sources: <br> **${sourcesString}**`;
+                messageDisplay.innerHTML = `¡Stop!`;
                 currentWinningIndexes.forEach((patternIndex, index) => {
                     createFinalView(reels[index], index, patternIndex);
                 });
