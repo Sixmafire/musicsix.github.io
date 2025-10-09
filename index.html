@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juego de Patrones Rítmicos - Adaptable</title>
+    <title>Juego de Patrones Rítmicos - Slot Horizontal Móvil</title>
     
     <style>
         /* ======================================= */
@@ -28,6 +28,7 @@
             background-color: #f4f4f9;
             margin: 0;
             padding: 10px 0; 
+            overflow-x: hidden; /* Evita cualquier deslizamiento horizontal del cuerpo */
         }
 
         h1 {
@@ -43,18 +44,16 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             text-align: center;
             margin-bottom: 10px; 
-            /* Se define un ancho fijo para escritorio (4 ruedas horizontales) */
-            width: calc((var(--reel-width) * 4) + 60px); 
+            width: calc((var(--reel-width) * 4) + 60px); /* Ancho fijo para escritorio */
         }
 
         .slot-window {
-            display: flex; /* Horizontal en escritorio */
+            display: flex; /* Horizontal siempre */
             gap: 10px;
             border: 5px solid var(--border-color);
             border-radius: 8px;
             overflow: hidden; 
             margin-bottom: 20px;
-            /* Se elimina el cálculo de ancho aquí ya que el contenedor ya lo tiene */
             width: 100%; 
             padding: 0;
         }
@@ -65,9 +64,14 @@
             height: var(--reel-height);
             border: 3px solid transparent; 
             box-sizing: border-box;
-            flex-shrink: 0; /* Evita que las ruedas se encojan en escritorio */
+            flex-shrink: 0; 
+            display: flex;
+            flex-direction: column; /* Vertical en escritorio */
+            justify-content: space-between;
         }
-
+        
+        /* Resto de estilos (highlight, botones, firma) se mantienen igual */
+        
         .reel.highlight {
             border-color: var(--highlight-color);
             box-shadow: 0 0 10px var(--highlight-color);
@@ -80,7 +84,6 @@
             object-fit: contain;
         }
 
-        /* (Estilos de Botones y Mensajes sin cambios relevantes) */
         .play-pattern-button {
             background-color: #007bff;
             color: white;
@@ -100,7 +103,7 @@
             background-color: #28a745;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 5-px;
             cursor: pointer;
             transition: background-color 0.2s;
             margin-right: 15px; 
@@ -117,10 +120,6 @@
             transition: background-color 0.2s;
         }
 
-        #spin-button:hover:not(:disabled) { background-color: #1e7e34; }
-        #play-all-button:hover:not(:disabled) { background-color: #e0a800; }
-        #spin-button:disabled, #play-all-button:disabled { background-color: #6c757d; cursor: not-allowed; }
-
         #message {
             margin-top: 15px;
             font-size: 1.2em;
@@ -129,7 +128,6 @@
             min-height: 40px; 
         }
 
-        /* --- Firma del Autor --- */
         .footer-signature {
             font-size: 0.75em; 
             color: #999; 
@@ -141,67 +139,66 @@
 
 
         /* ======================================= */
-        /* === ADAPTACIÓN A MÓVILES (VERTICAL) === */
+        /* === ADAPTACIÓN A MÓVILES (HORIZONTAL FORZADO) === */
         /* ======================================= */
         @media (max-width: 600px) {
             
-            /* 🛑 1. REAJUSTAR TAMAÑOS PARA MÓVIL */
+            /* 🛑 1. REDEFINIR TAMAÑOS EN FUNCIÓN DEL ANCHO DE LA PANTALLA (vw) */
+            /* El 90% del ancho (90vw) se divide entre las 4 ruedas y los 3 espacios de 5px */
             :root {
-                --reel-width: 90%; /* Las ruedas ocuparán el 90% del ancho disponible */
-                --reel-height: 120px; /* Tamaño ligeramente mayor para mejor visualización */
+                --reel-width: 20vw; /* Cada rueda ~20% del ancho de la vista */
+                --reel-height: 20vw; /* Mantenemos cuadrado para mejor visualización */
+                --gap: 1.5vw; /* Separación pequeña entre ruedas */
             }
             
-            /* 🛑 2. HACER QUE EL CONTENEDOR SE AJUSTE AL ANCHO DE LA PANTALLA */
+            /* 🛑 2. CONTENEDOR PRINCIPAL: Usamos vw para que se ajuste perfectamente */
             .slot-container {
-                padding: 15px;
-                width: 95%; 
+                padding: 10px;
+                /* El ancho será 4 * 20vw + 3 * 1.5vw + padding(aprox 4vw) = ~87.5vw. Se ajusta */
+                width: 95vw; 
                 box-sizing: border-box; 
             }
             
-            /* 🛑 3. REORGANIZAR LAS RUEDAS VERTICALMENTE */
+            /* 🛑 3. CONTENEDOR DE RUEDAS: Aseguramos la alineación horizontal y ajustamos el gap */
             .slot-window {
-                flex-direction: column; /* Las ruedas se apilan */
-                gap: 5px;
-                border: none; /* Quitamos el borde general del contenedor para que las ruedas se vean mejor */
-                padding: 0;
-                margin-bottom: 5px;
-            }
-
-            /* 🛑 4. HACER QUE CADA RUEDA OCUPE EL 100% DEL ANCHO DISPONIBLE */
-            .reel {
+                gap: var(--gap); /* Gap más pequeño */
                 width: 100%; 
-                height: var(--reel-height);
-                border: 2px solid var(--border-color); /* Agregamos borde a cada rueda individualmente */
-                border-radius: 5px;
-                margin-bottom: 5px;
-                display: flex;
-                flex-direction: row; /* Para poner el botón y la imagen horizontalmente */
-                align-items: center;
-                justify-content: space-between;
-                padding: 5px;
-            }
-            
-            /* 🛑 5. AJUSTAR ELEMENTOS INTERNOS DE LA RUEDA */
-            .reel img {
-                height: 100px;
-                width: 50%;
-                object-fit: contain;
+                border-width: 3px;
+                margin-bottom: 15px;
             }
 
-            .play-pattern-button {
-                width: 40%; 
-                padding: 8px 0;
-                font-size: 1em;
+            /* 🛑 4. RUEDAS INDIVIDUALES: Ajuste de tamaño y elementos */
+            .reel {
+                width: var(--reel-width); 
+                height: var(--reel-height);
+                border-width: 2px;
+                display: flex;
+                flex-direction: column; /* Volvemos a la vista vertical interna de escritorio */
+                justify-content: space-between;
+                padding: 0; 
             }
             
-            /* Ajuste de botones principales */
+            /* Ajuste del botón para que no desborde la rueda pequeña */
+            .play-pattern-button {
+                width: 90%; 
+                padding: 1px 0;
+                font-size: 0.6em; /* Muy pequeña la fuente */
+                margin: 2px auto;
+            }
+
+            /* Ajuste de la imagen para que quepa */
+            .reel img {
+                height: calc(var(--reel-height) - 15px); /* Restamos el espacio del botón */
+            }
+            
+            /* Ajuste de botones y mensaje para que se vean bien */
             #spin-button, #play-all-button {
-                padding: 8px 15px;
-                font-size: 1em;
+                padding: 6px 10px;
+                font-size: 0.9em;
             }
 
             #message {
-                font-size: 1em;
+                font-size: 0.9em;
             }
         }
     </style>
@@ -269,6 +266,9 @@
             const metronomeTic = new Audio('sounds/metronome.mp3'); 
 
 
+            // La altura real de la imagen en píxeles debe ser conocida para la animación de giro.
+            // Para asegurar la compatibilidad con el nuevo tamaño relativo (vw), 
+            // la lógica de spin usará la altura de la primera imagen al inicio (aunque sea un estimado).
             const IMAGE_HEIGHT = 150; 
             const SPIN_COUNT = 30; 
             const TOTAL_ITEMS = patterns.length; 
@@ -316,7 +316,14 @@
                     img.dataset.patternIndex = index;
                     reelElement.appendChild(img);
                 }
-                const initialPosition = -(TOTAL_ITEMS * IMAGE_HEIGHT); 
+                
+                // Usamos la altura computada para el cálculo de la animación.
+                // Es crucial que esta medida se mantenga constante durante el giro.
+                const computedReelHeight = reelElement.offsetHeight;
+                const computedImageHeight = computedReelHeight - (40 * (computedReelHeight / IMAGE_HEIGHT)); // Ajuste proporcional
+                
+                const initialPosition = -((TOTAL_ITEMS * computedImageHeight) + (computedReelHeight - computedImageHeight));
+                
                 reelElement.style.transition = 'none'; 
                 reelElement.style.transform = `translateY(${initialPosition}px)`;
             }
@@ -337,7 +344,6 @@
                 img.id = `result-reel${index}-${patternIndex}`; 
                 img.dataset.patternIndex = patternIndex; 
 
-                // 🛑 En modo vertical, el botón y la imagen se colocan lado a lado, no uno encima del otro
                 reel.appendChild(playButton);
                 reel.appendChild(img);
                 
@@ -349,7 +355,13 @@
                 return new Promise((resolve) => {
                     const reel = reels[reelIndex];
                     const winningIndex = Math.floor(Math.random() * TOTAL_ITEMS);
-                    const finalPosition = -((SPIN_COUNT * IMAGE_HEIGHT) + (winningIndex * IMAGE_HEIGHT));
+
+                    // Recalcular la altura de la imagen en tiempo real para la animación
+                    const computedReelHeight = reel.offsetHeight;
+                    const computedImageHeight = reel.querySelector('img') ? reel.querySelector('img').offsetHeight : IMAGE_HEIGHT;
+
+                    // Posición final basada en la altura computada para mantener la proporción de la animación.
+                    const finalPosition = -((SPIN_COUNT * computedImageHeight) + (winningIndex * computedImageHeight));
 
                     reel.style.transition = `transform ${SPIN_DURATION_MS / 1000}s ease-out`;
                     reel.style.transform = `translateY(${finalPosition}px)`;
@@ -361,20 +373,17 @@
             }
 
 
-            // --- LÓGICA DE SOLFEO RÍTMICO (Ajustada para Metrónomo Continuo) ---
-
+            // (Las funciones de solfeo y control de eventos se mantienen iguales)
             async function startSequentialPlay() {
                 spinButton.disabled = true;
                 playAllButton.disabled = true;
 
-                // 1. CUENTA REGRESIVA
                 for (let i = COUNTDOWN_BEATS; i > 0; i--) {
                     messageDisplay.innerHTML = `🎵 **Contando... ${i}**`;
                     playTic(); 
                     await new Promise(r => setTimeout(r, TEMPO_MS));
                 }
                 
-                // 2. REPRODUCCIÓN SECUENCIAL (SOLFEO)
                 messageDisplay.innerHTML = "🎶 **¡Solfeo Rítmico!**";
                 
                 for (let i = 0; i < currentWinningIndexes.length; i++) {
@@ -394,9 +403,6 @@
                 spinButton.disabled = false;
                 playAllButton.disabled = false;
             }
-
-
-            // --- LÓGICA DE GIRO ---
 
             async function startSpin() {
                 spinButton.disabled = true;
@@ -436,4 +442,4 @@
         });
     </script>
 </body>
-</html>tml>
+</html>
