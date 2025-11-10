@@ -1,91 +1,215 @@
 <!DOCTYPE html>
-<html lang="es">
+<html class="dark" lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juego de Patrones Rítmicos - V 1.0 (MVC)</title>
-    
-    <link rel="stylesheet" href="style.css">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Patrones Rítmicos Musicales</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+
+<link rel="stylesheet" href="style.css">
+
+<script>
+    // Configuración de Tailwind CSS (se mantiene en el HTML ya que usa el CDN y JS)
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            border: 'hsl(var(--border))',
+            input: 'hsl(var(--input))',
+            ring: 'hsl(var(--ring))',
+            background: 'hsl(var(--background))',
+            foreground: 'hsl(var(--foreground))',
+            primary: {
+              DEFAULT: 'hsl(var(--primary))',
+              foreground: 'hsl(var(--primary-foreground))',
+            },
+            secondary: {
+              DEFAULT: 'hsl(var(--secondary))',
+              foreground: 'hsl(var(--secondary-foreground))',
+            },
+            destructive: {
+              DEFAULT: 'hsl(var(--destructive))',
+              foreground: 'hsl(var(--destructive-foreground))',
+            },
+            muted: {
+              DEFAULT: 'hsl(var(--muted))',
+              foreground: 'hsl(var(--muted-foreground))',
+            },
+            accent: {
+              DEFAULT: 'hsl(var(--accent))',
+              foreground: 'hsl(var(--accent-foreground))',
+            },
+            popover: {
+              DEFAULT: 'hsl(var(--popover))',
+              foreground: 'hsl(var(--popover-foreground))',
+            },
+            card: {
+              DEFAULT: 'hsl(var(--card))',
+              foreground: 'hsl(var(--card-foreground))',
+            },
+          },
+          fontFamily: {
+            sans: ["Nunito", "sans-serif"],
+          },
+          borderRadius: {
+            lg: "var(--radius)",
+            md: "calc(var(--radius) - 2px)",
+            sm: "calc(var(--radius) - 4px)",
+          },
+        },
+      },
+    };
+  </script>
 </head>
-<body>
 
-    <h1>Patrones Rítmicos Musicales</h1>
-    
-    <details class="rhythm-guide">
-        <summary>Guía de Figuras Rítmicas (Haz click aquí)</summary>
-        <div class="rhythm-content">
-            <div class="rhythm-item">
-                <img src="images/00.png" alt="Dos Corcheas" data-pattern-index="0">
-                <button class="play-small-button" data-pattern-index="0">▶️</button>
-                <p>Dos Corcheas</p>
-            </div>
-            
-            <div class="rhythm-item">
-                <img src="images/01.png" alt="Corchea con puntillo y semicorchea" data-pattern-index="1">
-                <button class="play-small-button" data-pattern-index="1">▶️</button>
-                <p>Corchea con Puntillo y Semicorchea</p>
-            </div>
-            
-            <div class="rhythm-item">
-                <img src="images/02.png" alt="Dos semicorcheas y una corchea" data-pattern-index="2">
-                <button class="play-small-button" data-pattern-index="2">▶️</button>
-                <p>Dos Semicorcheas y una Corchea</p>
-            </div>
-            
-            <div class="rhythm-item">
-                <img src="images/03.png" alt="Semicorchea y corchea con puntillo" data-pattern-index="3">
-                <button class="play-small-button" data-pattern-index="3">▶️</button>
-                <p>Semicorchea y Corchea con Puntillo</p>
-            </div>
-            
-            <div class="rhythm-item">
-                <img src="images/04.png" alt="Semicorchea, corchea y semicorchea" data-pattern-index="4">
-                <button class="play-small-button" data-pattern-index="4">▶️</button>
-                <p>Semicorchea, Corchea y Semicorchea</p>
-            </div>
-            
-            <div class="rhythm-item">
-                <img src="images/05.png" alt="Cuatro Semicorcheas" data-pattern-index="5">
-                <button class="play-small-button" data-pattern-index="5">▶️</button>
-                <p>Cuatro Semicorcheas</p>
-            </div>
-            
-            <div class="rhythm-item">
-                <img src="images/06.png" alt="Tresillo de Corcheas" data-pattern-index="6">
-                <button class="play-small-button" data-pattern-index="6">▶️</button>
-                <p>Tresillo de Corcheas</p>
-            </div>
-            
-            <div class="rhythm-item">
-                <img src="images/07.png" alt="Corchea y dos semicorcheas" data-pattern-index="7">
-                <button class="play-small-button" data-pattern-index="7">▶️</button>
-                <p>Corchea y Dos Semicorcheas</p>
-            </div>
-            
-            <div class="rhythm-item">
-                <img src="images/08.png" alt="Negra" data-pattern-index="8">
-                <button class="play-small-button" data-pattern-index="8">▶️</button>
-                <p>Negra</p>
-            </div>
-            
-        </div>
-    </details>
-    <div class="slot-container">
-        <div class="slot-window">
-            <div class="reel" id="reel-1"></div>
-            <div class="reel" id="reel-2"></div>
-            <div class="reel" id="reel-3"></div>
-            <div class="reel" id="reel-4"></div>
-        </div>
-        
-        <button id="spin-button">¡GIRAR!</button>
-        <button id="play-all-button">▶️ Solfeo Rítmico</button>
-        
-        <div id="message">Pulsa "GIRAR" para comenzar.</div>
-    </div>
-    
-    <p class="footer-signature">Creado por: Sixmafire &reg;</p>
+<body class="bg-background font-sans text-foreground min-h-screen">
+<div class="max-w-md mx-auto p-4 sm:p-6 space-y-6" id="app">
+    <header>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-foreground text-center">Patrones Rítmicos Musicales</h1>
+    </header>
 
-    <script src="app.js"></script>
+    <main class="space-y-6">
+
+        <div class="border border-border rounded-lg bg-secondary/50" id="rhythmic-guide">
+            <details>
+                <summary class="flex items-center justify-between p-4 cursor-pointer font-bold text-foreground">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-primary text-2xl transition-transform">play_arrow</span>
+                        <span>Guía de Figuras Rítmicas</span>
+                    </div>
+                    <span class="text-sm font-normal text-muted-foreground">(Haz click aquí)</span>
+                </summary>
+                <div class="p-4 border-t border-border/50 rhythm-content">
+                    <ul class="space-y-4">
+                        <li class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="bg-white p-1 rounded-md border border-gray-300"><img alt="Dos corcheas" class="w-8 h-8" src="images/00.png"/></div>
+                                <span class="text-foreground/80">Dos Corcheas</span>
+                            </div>
+                            <button class="play-small-button bg-secondary text-foreground rounded-full p-2 hover:bg-accent transition-colors" data-pattern-index="0"><span class="material-symbols-outlined">play_arrow</span></button>
+                        </li>
+                        <li class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="bg-white p-1 rounded-md border border-gray-300"><img alt="Corchea con puntillo y semicorchea" class="w-8 h-8" src="images/01.png"/></div>
+                                <span class="text-foreground/80">Corchea con Puntillo y Semicorchea</span>
+                            </div>
+                            <button class="play-small-button bg-secondary text-foreground rounded-full p-2 hover:bg-accent transition-colors" data-pattern-index="1"><span class="material-symbols-outlined">play_arrow</span></button>
+                        </li>
+                        <li class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="bg-white p-1 rounded-md border border-gray-300"><img alt="Dos semicorcheas y una corchea" class="w-8 h-8" src="images/02.png"/></div>
+                                <span class="text-foreground/80">Dos Semicorcheas y una Corchea</span>
+                            </div>
+                            <button class="play-small-button bg-secondary text-foreground rounded-full p-2 hover:bg-accent transition-colors" data-pattern-index="2"><span class="material-symbols-outlined">play_arrow</span></button>
+                        </li>
+                        <li class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="bg-white p-1 rounded-md border border-gray-300"><img alt="Semicorchea y corchea con puntillo" class="w-8 h-8" src="images/03.png"/></div>
+                                <span class="text-foreground/80">Semicorchea y Corchea con Puntillo</span>
+                            </div>
+                            <button class="play-small-button bg-secondary text-foreground rounded-full p-2 hover:bg-accent transition-colors" data-pattern-index="3"><span class="material-symbols-outlined">play_arrow</span></button>
+                        </li>
+                        <li class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="bg-white p-1 rounded-md border border-gray-300"><img alt="Semicorchea, corchea y semicorchea" class="w-8 h-8" src="images/04.png"/></div>
+                                <span class="text-foreground/80">Semicorchea, Corchea y Semicorchea</span>
+                            </div>
+                            <button class="play-small-button bg-secondary text-foreground rounded-full p-2 hover:bg-accent transition-colors" data-pattern-index="4"><span class="material-symbols-outlined">play_arrow</span></button>
+                        </li>
+                        <li class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="bg-white p-1 rounded-md border border-gray-300"><img alt="Cuatro semicorcheas" class="w-8 h-8" src="images/05.png"/></div>
+                                <span class="text-foreground/80">Cuatro Semicorcheas</span>
+                            </div>
+                            <button class="play-small-button bg-secondary text-foreground rounded-full p-2 hover:bg-accent transition-colors" data-pattern-index="5"><span class="material-symbols-outlined">play_arrow</span></button>
+                        </li>
+                        <li class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="bg-white p-1 rounded-md border border-gray-300"><img alt="Tresillo de corcheas" class="w-8 h-8" src="images/06.png"/></div>
+                                <span class="text-foreground/80">Tresillo de Corcheas</span>
+                            </div>
+                            <button class="play-small-button bg-secondary text-foreground rounded-full p-2 hover:bg-accent transition-colors" data-pattern-index="6"><span class="material-symbols-outlined">play_arrow</span></button>
+                        </li>
+                        <li class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="bg-white p-1 rounded-md border border-gray-300"><img alt="Corchea y dos semicorcheas" class="w-8 h-8" src="images/07.png"/></div>
+                                <span class="text-foreground/80">Corchea y Dos Semicorcheas</span>
+                            </div>
+                            <button class="play-small-button bg-secondary text-foreground rounded-full p-2 hover:bg-accent transition-colors" data-pattern-index="7"><span class="material-symbols-outlined">play_arrow</span></button>
+                        </li>
+                        <li class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="bg-white p-1 rounded-md border border-gray-300"><img alt="Negra" class="w-8 h-8" src="images/08.png"/></div>
+                                <span class="text-foreground/80">Negra</span>
+                            </div>
+                            <button class="play-small-button bg-secondary text-foreground rounded-full p-2 hover:bg-accent transition-colors" data-pattern-index="8"><span class="material-symbols-outlined">play_arrow</span></button>
+                        </li>
+                    </ul>
+                </div>
+            </details>
+        </div>
+
+        <div class="border-2 border-primary rounded-lg p-4 bg-secondary/50">
+            <div class="grid grid-cols-4 gap-2 sm:gap-4">
+                
+                <div class="flex flex-col items-center">
+                    <div class="final-image-container reel-container border-2 border-border rounded-lg bg-white w-full aspect-square" id="reel-1">
+                        <div class="reel"></div>
+                    </div>
+                    <div id="button-1-container" class="mt-2 w-full flex justify-center">
+                        </div>
+                </div>
+
+                <div class="flex flex-col items-center">
+                    <div class="final-image-container reel-container border-2 border-border rounded-lg bg-white w-full aspect-square" id="reel-2">
+                        <div class="reel"></div>
+                    </div>
+                    <div id="button-2-container" class="mt-2 w-full flex justify-center"></div>
+                </div>
+
+                <div class="flex flex-col items-center">
+                    <div class="final-image-container reel-container border-2 border-border rounded-lg bg-white w-full aspect-square" id="reel-3">
+                        <div class="reel"></div>
+                    </div>
+                    <div id="button-3-container" class="mt-2 w-full flex justify-center"></div>
+                </div>
+
+                <div class="flex flex-col items-center">
+                    <div class="final-image-container reel-container border-2 border-border rounded-lg bg-white w-full aspect-square" id="reel-4">
+                        <div class="reel"></div>
+                    </div>
+                    <div id="button-4-container" class="mt-2 w-full flex justify-center"></div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="space-y-4 text-center">
+            <div class="grid grid-cols-2 gap-4">
+                <button id="spin-button" class="bg-primary text-primary-foreground font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-primary/90 transition-all text-lg flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined">casino</span>
+                    ¡GIRAR!
+                </button>
+                <button id="play-all-button" class="bg-secondary text-foreground font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-accent transition-all flex items-center justify-center gap-2 text-lg">
+                    <span class="material-symbols-outlined">play_arrow</span>
+                    Solfeo Rítmico
+                </button>
+            </div>
+            <p class="text-foreground/90 font-semibold" id="message">Pulsa <span class="text-primary font-bold">"GIRAR"</span> para comenzar.</p>
+        </div>
+
+    </main>
+    <footer class="text-center pt-8">
+        <p class="text-sm text-muted-foreground">Creado por: Sixmafire ®</p>
+    </footer>
+</div>
+
+<script src="app.js"></script>
+
 </body>
 </html>
